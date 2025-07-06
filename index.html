@@ -53,12 +53,12 @@
         #header-beats-banner {
             position: absolute; /* Positioned on top of the main banner */
             top: 0;
-            left: 0;
-            transform: translateY(-100%); /* Start hidden above */
+            left: 50%; /* Center horizontally */
+            transform: translate(-50%, -100%); /* Center horizontally and hide vertically */
             z-index: 2; /* Will be on top when it slides in */
         }
         .site-header.beats-active #header-beats-banner {
-            transform: translateY(0); /* Slide into view */
+            transform: translate(-50%, 0); /* Slide into view and stay centered */
         }
 
 
