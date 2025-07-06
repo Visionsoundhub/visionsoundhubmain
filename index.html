@@ -1,245 +1,281 @@
-<style>
-  @media (max-width: 767px) {
-    .content-container {
-      flex-direction: column !important;
-    }
-  }
-  @media (min-width: 768px) {
-    section > div {
-      flex-direction: row !important;
-    }
-  }
-  body, h2, p, a { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 700; }
-  body { background-color: #0b0b1a; }
-  .invisible-fix { display: none; }
-  .fade-in {
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeIn 1s ease forwards;
-  }
-  .fade-delay-1 { animation-delay: 0.2s; }
-  .fade-delay-2 { animation-delay: 0.4s; }
-  @keyframes fadeIn {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  .hover-glow {
-    transition: all 0.3s ease;
-    box-shadow: 0 0 0 transparent;
-  }
-  .hover-glow:hover {
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-    filter: brightness(1.05);
-  }
-  .hover-glow-text:hover {
-    color: #fff;
-    text-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
-    transition: all 0.3s ease;
-  }
-  $1background-color: #0f0f1f;
-  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  text-align: center;
-  padding: 1rem 0;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  border-top: 1px solid #1e1e2f;
-  border-bottom: 1px solid #1e1e2f;
-}
-  $1
-  border-bottom: 2px solid rgba(255, 255, 255, 0.15);}
-.nav-bar p {
-  margin: 0;
-  color: #bbb;
-  font-size: 0.9rem;
-  letter-spacing: 1px;
-}
-  .nav-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 0.8rem;
-  }
-  .nav-buttons a {
-  display: inline-block;
-  padding: 0.4rem 1rem;
-  border: 1px solid #444;
-  border-radius: 2rem;
-  color: #ccc;
-  background-color: #121221;
-  font-size: 0.9rem;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  
-}
-  @media (max-width: 767px) {
-    .content-container {
-      flex-direction: column !important;
-    }
-  }
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Αρχική - Vision Sound Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Segoe+UI:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  @media (min-width: 768px) {
-    .content-container {
-      flex-direction: row !important;
-    }
-  }
-  
-@keyframes pulseGlow {
-  0% {
-    box-shadow: 0 0 0 rgba(126, 87, 194, 0.0);
-  }
-  50% {
-    box-shadow: 0 0 20px rgba(126, 87, 194, 0.3), 0 0 40px rgba(160, 176, 255, 0.2);
-  }
-  100% {
-    box-shadow: 0 0 0 rgba(126, 87, 194, 0.0);
-  }
-}
-  .pulse-glow {
-    animation: pulseNav 3s infinite ease-in-out;
-  }
-  @keyframes pulseNav {
-    0% { box-shadow: 0 0 0 rgba(126, 87, 194, 0.0); }
-    50% { box-shadow: 0 0 12px rgba(126, 87, 194, 0.15), 0 0 32px rgba(126, 87, 194, 0.1); }
-    100% { box-shadow: 0 0 0 rgba(126, 87, 194, 0.0); }
-  }
-.nav-buttons a:hover {
-    box-shadow: 0 0 12px rgba(186, 147, 255, 0.4), 0 0 24px rgba(186, 147, 255, 0.2);
-    filter: brightness(1.1);
-    color: #fff;
-  }
-  .logo-wrapper {
-    background-image: url('https://github.com/Visionsoundhub/visionsoundhubmain/blob/main/logomainbannerokwhite.jpg?raw=true');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-color: #fff;
-    width: 100%;
-    aspect-ratio: 3 / 1;
-    animation: fadeIn 1.2s ease forwards;
-    opacity: 0;
-  }
-  .burger {
-    display: none;
-    cursor: pointer;
-    margin: 0 auto;
-    width: 30px;
-    height: 22px;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  .burger div {
-    height: 4px;
-    background: #ccc;
-    border-radius: 2px;
-    transition: all 0.3s ease;
-  }
-  @media (max-width: 768px) {
-    .burger {
-      display: flex;
-    }
-    .nav-buttons {
-      display: none;
-      flex-direction: column;
-      background: #0f0f1f;
-      margin-top: 1rem;
-      padding: 1rem;
-      border-radius: 12px;
-    }
-    .nav-buttons.active {
-      display: flex;
-      animation: fadeInMenu 0.4s ease;
-    }
-  }
-  @keyframes fadeInMenu {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-</style>
+    <style>
+        /* --- General Body --- */
+        body {
+            background-color: #0b0b1a;
+            color: #eee;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            /* Add padding at the bottom to avoid footer overlap */
+            padding-bottom: 100px; 
+        }
 
-<!-- Version Tag -->
-<div style="text-align:center; padding-top: 0.5rem; font-size: 0.75rem; color: #777; font-family: 'Segoe UI', sans-serif;">v0.9 - Mobile Layout Testing</div>
+        /* --- Header Styles --- */
+        .site-header {
+            width: 100%;
+            background-color: #fff; /* ΑΛΛΑΓΗ: Από μαύρο σε λευκό */
+            text-align: center;
+        }
+        .site-header img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto; /* Κεντράρει την εικόνα */
+        }
 
-<!-- Header Logo as Background -->
-<div class="logo-wrapper"></div>
+        /* --- Main Navigation Styles --- */
+        .main-navigation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem 1rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+            background-color: #0f0f1f;
+            border-top: 1px solid #2a2a3a;
+            border-bottom: 1px solid #2a2a3a;
+        }
+        .nav-btn {
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-decoration: none;
+            white-space: nowrap;
+            padding: 0.7rem 1.6rem;
+            border-radius: 999px;
+            border: 1px solid #555;
+            cursor: pointer;
+            color: #ddd;
+            background: linear-gradient(145deg, #2c2c3a, #1a1a2a);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+        }
+        .nav-btn:hover {
+            background: linear-gradient(145deg, #3c3c4a, #2a2a3a);
+            border-color: #c5c5ff;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4), 
+                        inset 0 1px 1px rgba(255,255,255,0.1),
+                        0 0 15px rgba(160, 176, 255, 0.4),
+                        0 0 20px rgba(126, 87, 194, 0.3);
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        }
 
-<!-- Navigation Bar -->
-<div class="nav-bar pulse-glow" style="background-color: #121225; border-bottom: 1px solid rgba(255, 255, 255, 0.1); ">
-  <div class="burger" onclick="toggleMenu()">
-    <div></div><div></div><div></div>
-  </div>
-  <div class="nav-buttons" id="nav-menu">
-    <a href="#">Home</a>
-    <a href="#">Υπηρεσίες</a>
-    <a href="#">Portfolio</a>
-    <a href="#">Beats</a>
-    <a href="#">Pricing</a>
-    <a href="#">Vision Sound Hub</a>
-</div>
+        /* --- Main Content Area --- */
+        .main-content {
+            padding: 3rem 1rem;
+            max-width: 1200px; /* Increased max-width for two columns */
+            margin: 0 auto;
+        }
+        
+        /* --- Homepage Content Styles --- */
+        .two-column-layout {
+            display: flex;
+            flex-wrap: wrap; /* Allows columns to stack on mobile */
+            gap: 2rem; /* Space between columns */
+        }
+        .content-box {
+            background: rgba(42, 42, 60, 0.3);
+            border: 1px solid #3a3a4a;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            flex: 1; /* Each column takes up equal space */
+            min-width: 320px; /* Minimum width before stacking */
+        }
+        .content-box h2 {
+            font-size: 2rem;
+            color: #fff;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            text-align: left; 
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
+        }
+        .content-box p {
+            color: #ccc;
+            line-height: 1.7;
+            text-align: left; 
+            margin-bottom: 1.5rem;
+        }
+        .content-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 1.5rem 0 0 0; 
+        }
+        .content-box li {
+            color: #ddd;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .content-box .fa-check-circle {
+            color: #42a5f5;
+        }
+        .content-image {
+            width: 100%;
+            border-radius: 12px;
+            margin-top: 2rem;
+            border: 1px solid #4a4a5a;
+        }
+        
+        /* --- Call to Action Button --- */
+        .cta-btn {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.8rem 2rem;
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #fff;
+            background: linear-gradient(145deg, #7e57c2, #5c3a9d);
+            border: none;
+            border-radius: 12px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .cta-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(126, 87, 194, 0.6);
+        }
 
-<!-- About Section -->
-<section style="background-color: #0b0b1a; color: #eee; font-family: 'Segoe UI', sans-serif; padding: 2rem 1rem;">
-  <div class="content-container" style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2rem;">
+        /* --- Animation Styles --- */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-    <div class="fade-in fade-delay-1" style="flex: 1 1 45%; min-width: 300px;">
-      <h2 class="hover-glow-text" style="font-size: 1.6rem; font-weight: 700; color: #ccc; margin-bottom: 0; text-align: left;">About Vision</h2>
-      <p class="hover-glow-text" style="font-size: 0.95rem; line-height: 1.6; color: #aaa; text-align: left;">
-        Το Vision Sound προσφέρει ολοκληρωμένες λύσεις, από μουσική παραγωγή μέχρι μοντάζ και επεξεργασία βίντεο.<br><br>
-        Projects για δημιουργούς και brands που χρειάζονται ποιότητα, άμεσο και ευέλικτο περιεχόμενο.<br><br>
-        Ηχητική επεξεργασία (mix & master)<br>
-        Μουσική παραγωγή για εμπορική χρήση<br>
-        Βίντεο μοντάζ & επεξεργασία για social & brand content
-      </p>
-      <img src="https://github.com/Visionsoundhub/visionsoundhubmain/blob/main/mikespeakermain.jpg?raw=true" alt="Studio Microphone and Speaker" class="hover-glow" style="width: 100%; max-width: 396px; margin-top: 1rem; margin-bottom: 6vh; display: block; margin-left: 0;">
+
+        /* --- Footer Styles --- */
+        .site-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #0f0f1f;
+            padding: 1rem;
+            text-align: center;
+            border-top: 1px solid #2a2a3a;
+            z-index: 100;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+        .footer-links a:hover {
+            color: #fff;
+        }
+        .footer-links a i {
+            margin-right: 0.5rem;
+        }
+        .copyright-text {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- ΚΕΦΑΛΙΔΑ -->
+<header class="site-header">
+    <img src="https://github.com/Visionsoundhub/visionsoundhubmain/blob/main/logomainbannerokwhite.jpg?raw=true" alt="Vision Sound Hub Banner">
+</header>
+
+<!-- ΠΛΟΗΓΗΣΗ -->
+<nav class="main-navigation">
+    <a href="#" class="nav-btn">Home</a>
+    <a href="#" class="nav-btn">Υπηρεσίες</a>
+    <a href="#" class="nav-btn">Portfolio</a>
+    <a href="#" class="nav-btn">Beats</a>
+    <a href="#" class="nav-btn">Pricing</a>
+    <a href="#" class="nav-btn">Vision Sound Hub</a>
+</nav>
+
+<!-- ΚΥΡΙΩΣ ΠΕΡΙΕΧΟΜΕΝΟ ΣΕΛΙΔΑΣ -->
+<main class="main-content">
+    
+    <div class="two-column-layout">
+        <!-- ΑΡΙΣΤΕΡΗ ΣΤΗΛΗ -->
+        <div class="content-box fade-in-section">
+            <h2>About Vision</h2>
+            <p>Το Vision Sound προσφέρει ολοκληρωμένες λύσεις, από μουσική παραγωγή μέχρι μοντάζ και επεξεργασία βίντεο.</p>
+            <p>Projects για δημιουργούς και brands που χρειάζονται ποιότητα, άμεσο και ευέλικτο περιεχόμενο.</p>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Ηχητική επεξεργασία (mix & master)</li>
+                <li><i class="fas fa-check-circle"></i> Μουσική παραγωγή για εμπορική χρήση</li>
+                <li><i class="fas fa-check-circle"></i> Βίντεο μοντάζ & επεξεργασία για social & brand content</li>
+            </ul>
+            <img src="https://github.com/Visionsoundhub/visionsoundhubmain/blob/main/mikespeakermain.jpg?raw=true" alt="Εξοπλισμός Studio" class="content-image">
+        </div>
+
+        <!-- ΔΕΞΙΑ ΣΤΗΛΗ -->
+        <div class="content-box fade-in-section">
+            <h2>Το Όραμα</h2>
+            <p>Δεν θέλουμε να φτιάξουμε απλά άλλο ένα στούντιο.</p>
+            <p>Το όραμά μας είναι να χτίσουμε έναν δημιουργικό πολυχώρο για όσους αισθάνονται διαφορετικοί.</p>
+            <p>Έναν χώρο ανοιχτό για μικρούς, νέους και μεγάλους, με δράσεις που έχουν στο κέντρο τους την έκφραση και τη σύνδεση.</p>
+            <p><strong>Εδώ, η διαφορετικότητα δεν θα είναι εμπόδιο.<br>Θα είναι η ταυτότητα.</strong></p>
+            <a href="#" class="cta-btn">Γίνε Μέρος του Vision</a>
+        </div>
     </div>
-    <!-- Right Column: Το Όραμα -->
-    <div class="fade-in fade-delay-2" style="flex: 1 1 45%; min-width: 300px;">
-      <h2 class="hover-glow-text" style="font-size: 2rem; font-weight: 700; color: #ccc; margin-bottom: 0; text-align: right;">Το Όραμα</h2>
-      <p class="hover-glow-text" style="line-height: 1.6; color: #aaa; text-align: right;">
-        Δεν θέλουμε να φτιάξουμε απλά άλλο ένα στούντιο.<br><br>
-        Το όραμά μας είναι να χτίσουμε έναν δημιουργικό πολυχώρο για όσους αισθάνονται διαφορετικοί.<br><br>
-        Έναν χώρο ανοιχτό για μικρούς, νέους και μεγάλους,
-        με δράσεις που έχουν στο κέντρο τους την έκφραση και τη σύνδεση.<br><br>
-        Εδώ, η διαφορετικότητα δεν θα είναι εμπόδιο.<br>
-        Θα είναι η ταυτότητα.
-      </p>
+
+</main>
+
+<!-- ΥΠΟΣΕΛΙΔΟ -->
+<footer class="site-footer">
+    <div class="footer-links">
+        <a href="mailto:studiovisionsound@gmail.com"><i class="fas fa-envelope"></i> Email</a>
+        <a href="https://www.instagram.com/visionsoundhub.gr"><i class="fab fa-instagram"></i> Instagram</a>
+        <a href="https://www.tiktok.com/@visionsoundhub"><i class="fab fa-tiktok"></i> TikTok</a>
     </div>
-  </div>
-</section>
+    <p class="copyright-text">&copy; 2024 Vision Sound. All rights reserved.</p>
+</footer>
 
 <script>
-  function sendHeightToParent() {
-    const height = document.body.scrollHeight;
-    parent.postMessage({ type: "resize-iframe", height: height }, "*");
-  }
-  window.addEventListener("load", sendHeightToParent);
-  window.addEventListener("resize", sendHeightToParent);
-  const observer = new MutationObserver(sendHeightToParent);
-  observer.observe(document.body, { childList: true, subtree: true });
-  function toggleMenu() {
-    document.getElementById('nav-menu').classList.toggle('active');
-  }
+// --- ΛΟΓΙΚΗ ΓΙΑ ΤΑ ANIMATIONS ---
+document.addEventListener('DOMContentLoaded', function() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+            }
+        });
+    }, {
+        threshold: 0.1 // Trigger when 10% of the element is visible
+    });
+
+    const sections = document.querySelectorAll('.fade-in-section');
+    sections.forEach(section => {
+        observer.observe(section);
+    });
+});
 </script>
 
-<footer style="position: fixed; bottom: 0; width: 100%; background-color: #0f0f1f; box-shadow: 0 -4px 12px rgba(0,0,0,0.3); border-top: 1px solid #1e1e2f; text-align: center; padding: 0.75rem 1rem;">
-  <style>
-    footer a:hover {
-      color: #fff !important;
-      text-shadow: 0 0 10px rgba(186, 147, 255, 0.7);
-    }
-  </style>
-  <p style="margin: 0.5rem 0; font-size: 0.7rem; transform: scale(0.85);">
-    <a href="mailto:studiovisionsound@gmail.com" style="color: #ccc; text-decoration: none; margin: 0 1rem;">
-      <i class="fas fa-envelope"></i> Email
-    </a>
-    <a href="https://instagram.com/visionsoundhub.gr" target="_blank" style="color: #ccc; text-decoration: none; margin: 0 1rem;">
-      <i class="fab fa-instagram"></i> Instagram
-    </a>
-    <a href="#" target="_blank" style="color: #ccc; text-decoration: none; margin: 0 1rem;">
-      <i class="fab fa-tiktok"></i> TikTok
-    </a>
-  </p>
-  <p style="margin-top: 0.5rem; font-size: 0.6rem; color: #555; transform: scale(0.85);">© Vision Sound 2025. All rights reserved.</p>
-</footer>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</body>
+</html>
