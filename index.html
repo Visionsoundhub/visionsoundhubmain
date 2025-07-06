@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Αρχική - Vision Sound Hub</title>
+    <title>Vision Sound Hub</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Segoe+UI:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@400;700&family=Segoe+UI:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -16,22 +16,51 @@
             color: #eee;
             font-family: 'Inter', sans-serif;
             margin: 0;
-            /* Add padding at the bottom to avoid footer overlap */
-            padding-bottom: 100px; 
+            padding: 0;
+            padding-bottom: 100px; /* Space for footer */
+        }
+        body.modal-open {
+            overflow: hidden;
+        }
+
+        /* --- Page Content Visibility --- */
+        .page-content {
+            display: none; /* Hide all pages by default */
+        }
+        .page-content.active {
+            display: block; /* Show only the active page */
         }
 
         /* --- Header Styles --- */
         .site-header {
+            position: relative; /* Required for positioning the sliding logo */
             width: 100%;
-            background-color: #fff; /* ΑΛΛΑΓΗ: Από μαύρο σε λευκό */
+            background-color: #fff;
             text-align: center;
+            overflow: hidden; /* Crucial for the sliding effect */
         }
         .site-header img {
             max-width: 100%;
             height: auto;
             display: block;
-            margin: 0 auto; /* Κεντράρει την εικόνα */
+            margin: 0 auto;
+            transition: transform 0.5s ease-in-out;
         }
+        #header-main-banner {
+            position: relative; /* In the normal flow */
+            z-index: 1;
+        }
+        #header-beats-banner {
+            position: absolute; /* Positioned on top of the main banner */
+            top: 0;
+            left: 0;
+            transform: translateY(-100%); /* Start hidden above */
+            z-index: 2; /* Will be on top when it slides in */
+        }
+        .site-header.beats-active #header-beats-banner {
+            transform: translateY(0); /* Slide into view */
+        }
+
 
         /* --- Main Navigation Styles --- */
         .main-navigation {
@@ -60,7 +89,7 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.05);
             transition: all 0.3s ease;
         }
-        .nav-btn:hover {
+        .nav-btn:hover, .nav-btn.active {
             background: linear-gradient(145deg, #3c3c4a, #2a2a3a);
             border-color: #c5c5ff;
             color: #fff;
@@ -75,15 +104,26 @@
         /* --- Main Content Area --- */
         .main-content {
             padding: 3rem 1rem;
-            max-width: 1200px; /* Increased max-width for two columns */
-            margin: 0 auto;
         }
         
-        /* --- Homepage Content Styles --- */
+        /* --- Page & Section Titles --- */
+        .page-title, .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #fff;
+            margin-top: 0;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            text-align: center; /* Centered titles */
+        }
+        
+        /* --- Homepage Specific Styles (from index.html) --- */
         .two-column-layout {
             display: flex;
-            flex-wrap: wrap; /* Allows columns to stack on mobile */
-            gap: 2rem; /* Space between columns */
+            flex-wrap: wrap; 
+            gap: 2rem; 
+            max-width: 1200px;
+            margin: 0 auto;
         }
         .content-box {
             background: rgba(42, 42, 60, 0.3);
@@ -91,8 +131,8 @@
             border-radius: 16px;
             padding: 2rem;
             margin-bottom: 2rem;
-            flex: 1; /* Each column takes up equal space */
-            min-width: 320px; /* Minimum width before stacking */
+            flex: 1; 
+            min-width: 320px; 
         }
         .content-box h2 {
             font-size: 2rem;
@@ -129,8 +169,358 @@
             margin-top: 2rem;
             border: 1px solid #4a4a5a;
         }
+
+        /* --- Portfolio Specific Styles (from portfolio.html) --- */
+        .brands-section {
+            background-color: #0b0b1a;
+            padding: 1rem 1rem 1.5rem 1rem;
+            text-align: center;
+            max-width: 1000px;
+            margin: 0 auto 3rem auto;
+        }
+        .section-toggle-btn {
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #ccc;
+            background-color: transparent;
+            border: none;
+            border-bottom: 1px solid #3a3a4a;
+            padding: 1rem;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.75rem;
+            transition: color 0.3s ease;
+        }
+        .section-toggle-btn:hover {
+            color: #fff;
+        }
+        .section-toggle-btn .fa-chevron-down {
+            transition: transform 0.4s ease;
+        }
+        .section-toggle-btn.active .fa-chevron-down {
+            transform: rotate(180deg);
+        }
+        .brands-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin: 0 auto;
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.7s ease, opacity 0.5s ease, padding-top 0.5s ease;
+        }
+        .brands-container.visible {
+            max-height: 1000px;
+            opacity: 1;
+            padding-top: 2rem;
+        }
+        .brand-item {
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 150px;
+        }
+        .brand-item:hover {
+            transform: translateY(-5px);
+        }
+        .brand-item:hover img {
+            box-shadow: 0 0 25px rgba(130, 180, 255, 0.4);
+            filter: brightness(1.08);
+        }
+        .brand-item img {
+            height: 60px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        .brand-item small {
+            color: #888;
+            display: block;
+            margin-top: 0.75rem;
+            font-size: 0.8rem;
+        }
+        .filter-controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 3rem; 
+        }
+        .filter-btn {
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            padding: 0.6rem 1.2rem;
+            border-radius: 999px;
+            border: 1px solid #555;
+            cursor: pointer;
+            color: #ddd;
+            background: linear-gradient(145deg, #2c2c3a, #1a1a2a);
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            border-color: #7e57c2;
+        }
+        .filter-btn.active {
+            border-color: #c5c5ff;
+            color: #fff;
+            background: linear-gradient(145deg, #7e57c2, #42a5f5);
+            box-shadow: 0 0 15px rgba(126, 87, 194, 0.5);
+        }
+        .portfolio-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 900px;
+            margin: 0 auto;
+            transition: opacity 0.2s ease-in-out;
+        }
+        .portfolio-list.fading {
+            opacity: 0;
+        }
+        .portfolio-item {
+            display: flex;
+            align-items: center;
+            background: rgba(42, 42, 60, 0.3);
+            border-radius: 12px;
+            border: 1px solid #3a3a4a;
+            overflow: hidden;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+        }
+        .portfolio-item:hover {
+            background-color: rgba(42, 42, 60, 0.5);
+            border-color: #7e57c2;
+        }
+        .portfolio-item-thumbnail {
+            position: relative;
+            flex-shrink: 0;
+            width: 120px;
+            height: 90px;
+        }
+        .portfolio-item-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .portfolio-item-thumbnail .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0,0,0,0.4);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .portfolio-item:hover .overlay {
+            opacity: 1;
+        }
+        .portfolio-item-thumbnail .overlay i {
+            font-size: 2.5rem;
+            color: rgba(255,255,255,0.8);
+        }
+        .portfolio-item-info {
+            padding: 1rem 1.5rem;
+            text-align: left;
+        }
+        .portfolio-item-title {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
         
-        /* --- Call to Action Button --- */
+        /* --- Video Modal Styles --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            position: relative;
+            background: linear-gradient(145deg, #1e1e2f, #10101d);
+            width: 90%;
+            max-width: 960px;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        #mix-match-modal .modal-content {
+            padding: 2rem;
+            max-width: 600px;
+            border: 1px solid #444;
+            border-radius: 16px;
+        }
+        #video-modal .modal-content {
+             background: transparent;
+        }
+        .modal-overlay.visible .modal-content {
+            transform: scale(1);
+        }
+        .modal-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            font-size: 2.5rem;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 300;
+            transition: transform 0.3s ease;
+            z-index: 2001;
+        }
+        #mix-match-modal .modal-close {
+            top: 10px;
+            right: 15px;
+            font-size: 2rem;
+            color: #888;
+        }
+        .modal-close:hover {
+            transform: rotate(90deg);
+        }
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .external-link-container {
+            position: relative;
+            line-height: 0;
+        }
+        .external-link-container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+            pointer-events: none;
+            z-index: 1;
+            border-radius: 0 0 8px 8px;
+        }
+        .external-link-container img {
+            display: block;
+            width: 100%;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+            max-height: 80vh;
+            border-radius: 8px;
+            object-fit: contain;
+        }
+        .btn-external {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            background: linear-gradient(145deg, #7e57c2, #42a5f5);
+            color: white;
+            text-decoration: none;
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        .btn-external:hover {
+            transform: scale(1.05) translateX(-47.5%);
+            box-shadow: 0 0 20px rgba(126, 87, 194, 0.7);
+        }
+        .btn-external .fab {
+            font-size: 1.5rem;
+        }
+
+        /* --- Hub Page Specific Styles (from hub.html) --- */
+        #page-hub .main-content {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .hub-section {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            background: rgba(42, 42, 60, 0.3);
+            border: 1px solid #3a3a4a;
+            border-radius: 16px;
+            margin-bottom: 3rem;
+            overflow: hidden;
+        }
+        .hub-section:nth-child(odd) .hub-section-image {
+            order: 2;
+        }
+        .hub-section-image {
+            flex: 1;
+            min-width: 300px;
+        }
+        .hub-section-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .hub-section-text {
+            flex: 1.5; 
+            min-width: 300px;
+            padding: 2.5rem;
+        }
+        .hub-section-text h2 {
+            font-size: 2rem;
+            color: #fff;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
+        }
+        .hub-section-text p {
+            color: #ccc;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* --- CTA Button & Animation Styles (shared) --- */
         .cta-btn {
             display: inline-block;
             margin-top: 1rem;
@@ -150,8 +540,15 @@
             transform: scale(1.05);
             box-shadow: 0 0 20px rgba(126, 87, 194, 0.6);
         }
-
-        /* --- Animation Styles --- */
+        .cta-btn.disabled {
+            background: linear-gradient(145deg, #5a5a6a, #4a4a5a);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .cta-btn.disabled:hover {
+             transform: none;
+             box-shadow: none;
+        }
         .fade-in-section {
             opacity: 0;
             transform: translateY(30px);
@@ -162,7 +559,356 @@
             transform: translateY(0);
         }
 
+        /* --- Beats Page Specific Styles (from beats.html) --- */
+        #page-beats .page-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5rem;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.3), 0 0 25px rgba(126, 87, 194, 0.5);
+        }
+        #page-beats .top-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        #page-beats .search-container {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+        }
+        #page-beats #search-input {
+            width: 100%;
+            max-width: 480px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid #555;
+            background-color: #2c2c3a;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        #page-beats #search-input::placeholder { color: #888; }
+        #page-beats #search-input:focus {
+            border-color: #7e57c2;
+            box-shadow: 0 0 15px rgba(126, 87, 194, 0.5);
+        }
+        #page-beats #vibe-search-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            background: linear-gradient(145deg, #7e57c2, #42a5f5);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-family: 'Segoe UI', sans-serif;
+            transition: all 0.3s ease;
+        }
+        #page-beats #vibe-search-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(126, 87, 194, 0.7);
+        }
+        #page-beats .category-filter {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            padding-top: 0;
+        }
+        #page-beats .info-box {
+            max-width: 800px;
+            margin: 1rem auto;
+            text-align: center;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #ccc;
+            background: rgba(255,255,255,0.02);
+            padding: 1.5rem;
+            border-radius: 12px;
+        }
+        #page-beats .beat-list {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+            gap: 0.75rem;
+        }
+        #page-beats .beat-item {
+            background: rgba(42, 42, 60, 0.3);
+            border: 1px solid #3a3a4a;
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            width: 100%;
+            max-width: 700px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        #page-beats .beat-item.is-playing-card {
+            animation: pulse-glow 2s infinite alternate;
+            border-color: #7e57c2;
+        }
+        #page-beats .beat-item-play-btn {
+            font-size: 1.5rem;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        #page-beats .beat-item-play-btn:hover { color: #7e57c2; }
+        #page-beats .beat-item-title { flex-grow: 1; font-weight: 600; }
+        #page-beats .beat-item-price { font-weight: 700; color: #00ff99; }
+        #page-beats .beat-item-price.sold { color: #ff5555; }
+        #page-beats .beat-item .btn {
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: 700;
+            padding: 0.4rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            background: linear-gradient(145deg, #555555, #2a2a2a);
+            color: #e0e0e0;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+        }
+        #page-beats .beat-item .btn:hover {
+            background: linear-gradient(145deg, #656565, #333333);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        @keyframes pulse-glow {
+            from { box-shadow: 0 0 8px rgba(126, 87, 194, 0.5); }
+            to { box-shadow: 0 0 25px rgba(66, 165, 245, 0.8); }
+        }
 
+        /* --- Sticky Player (Beats Page) --- */
+        #sticky-player {
+            position: fixed;
+            bottom: 85px; 
+            left: 0;
+            width: 100%;
+            background: #181818;
+            border-top: 1px solid #333;
+            padding: 0.5rem 1rem;
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            align-items: center;
+            gap: 1rem;
+            z-index: 1500;
+            transition: transform 0.5s ease;
+            transform: translateY(200%);
+        }
+        #sticky-player.visible {
+            transform: translateY(0);
+        }
+        #sticky-player .track-info {
+            text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        #sticky-player .track-title { font-weight: bold; margin: 0; }
+        #sticky-player .player-controls-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #sticky-player .custom-audio-player {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 400px;
+        }
+        #sticky-player .play-pause-btn {
+            background: linear-gradient(145deg, #7e57c2, #42a5f5);
+            color: #fff; border: none; border-radius: 50%; width: 45px; height: 45px;
+            font-size: 18px; cursor: pointer; display: flex; justify-content: center; align-items: center; flex-shrink: 0;
+        }
+        #sticky-player .progress-bar-container {
+            flex-grow: 1; background: #444; border-radius: 10px; height: 8px; cursor: pointer; overflow: hidden;
+        }
+        #sticky-player .progress-bar {
+            background: linear-gradient(90deg, #7e57c2, #42a5f5); width: 0%; height: 100%; border-radius: 10px;
+        }
+        #sticky-player .time-display {
+            font-size: 0.85rem; color: #aaa; min-width: 100px; text-align: center;
+        }
+        @media (max-width: 768px) {
+            #sticky-player { grid-template-columns: 1fr; padding: 0.5rem; gap: 0.5rem; }
+            #sticky-player .track-info, #sticky-player .player-actions { display: none; }
+        }
+
+        /* --- Vibe Search Modal --- */
+        .vibe-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); display: none;
+            justify-content: center; align-items: center; z-index: 3000;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .vibe-modal-overlay.visible { display: flex; opacity: 1; }
+        .vibe-modal-content {
+            position: relative; background: transparent; text-align: center; width: 90vw; height: 90vw;
+            max-width: 600px; max-height: 600px; display: flex; justify-content: center; align-items: center;
+            transform: scale(0.9); transition: transform 0.3s ease;
+        }
+         #vibe-visualizer {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; z-index: 0;
+        }
+        .vibe-text-wrapper {
+            position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center;
+        }
+        .vibe-modal-overlay.visible .vibe-modal-content { transform: scale(1); }
+        .vibe-modal-content h2 { margin-top: 0; font-family: 'Segoe UI', sans-serif; }
+        .vibe-bubbles {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-top: 1.5rem; max-width: 500px;
+        }
+        .vibe-bubble {
+            padding: 0.8rem 1.5rem; border-radius: 50px; border: 1px solid #555; background: #333; color: #fff;
+            cursor: pointer; transition: all 0.3s ease; font-weight: 600; animation-name: float;
+            animation-iteration-count: infinite; animation-direction: alternate; animation-timing-function: ease-in-out;
+        }
+        .vibe-bubble:hover {
+            background: #7e57c2; transform: scale(1.1) translateY(-5px); border-color: #7e57c2; animation-play-state: paused;
+        }
+        .vibe-modal-close {
+            position: absolute; top: 20px; right: 20px; font-size: 2.5rem; color: #fff; cursor: pointer; font-weight: 300;
+            transition: transform 0.3s ease; background: rgba(0,0,0,0.5); border-radius: 50%; width: 40px; height: 40px;
+            display: flex; justify-content: center; align-items: center; line-height: 1; z-index: 2;
+        }
+        .vibe-modal-close:hover { transform: rotate(90deg); }
+        #shuffle-vibes-btn {
+            margin-top: 2rem; padding: 0.6rem 1.2rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3);
+            color: #fff; border-radius: 50px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;
+        }
+        #shuffle-vibes-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
+        #shuffle-vibes-btn i { margin-right: 0.5rem; }
+        @keyframes float { 0% { transform: translateY(0px); } 100% { transform: translateY(-10px); } }
+        
+        /* --- Pricing Page Specific Styles (from pricing.html) --- */
+        #page-pricing .section-title { margin-bottom: 1.5rem; }
+        .mix-match-container { text-align: center; margin-bottom: 3rem; }
+        .btn-mix-match {
+            font-family: 'Segoe UI', sans-serif; font-weight: 700; font-size: 1.2rem; padding: 0.8rem 2rem;
+            border-radius: 12px; border: 1px solid #7e57c2; color: #fff;
+            background: linear-gradient(145deg, rgba(126, 87, 194, 0.25), rgba(66, 165, 245, 0.25));
+            cursor: pointer; transition: all 0.3s ease;
+        }
+        .btn-mix-match:hover {
+            background: linear-gradient(145deg, rgba(126, 87, 194, 0.4), rgba(66, 165, 245, 0.4));
+            box-shadow: 0 0 20px rgba(126, 87, 194, 0.5); transform: scale(1.05);
+        }
+        .service-accordion { display: flex; flex-direction: column; gap: 1rem; max-width: 800px; margin: 0 auto; }
+        .service-toggle-btn {
+            background: linear-gradient(145deg, #2c2c3a, #1a1a2a); border: 1px solid #444; border-radius: 12px; padding: 1.25rem 1.5rem;
+            width: 100%; text-align: left; color: #eee; cursor: pointer; font-family: 'Segoe UI', sans-serif;
+            font-size: 1.2rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease;
+        }
+        .service-toggle-btn:hover { background: linear-gradient(145deg, #3c3c4a, #2a2a3a); border-color: #7e57c2; }
+        .service-toggle-btn .fa-chevron-down { transition: transform 0.4s ease; }
+        .service-toggle-btn.active .fa-chevron-down { transform: rotate(180deg); }
+        .service-content {
+            background: linear-gradient(145deg, #1e1e2f, #10101d); border: 1px solid #3a3a4a; border-top: none;
+            border-radius: 0 0 16px 16px; padding: 0 2rem; max-height: 0; opacity: 0; overflow: hidden;
+            transition: max-height 0.9s ease, opacity 0.7s ease, padding 0.7s ease;
+        }
+        .service-content.visible { max-height: 3000px; opacity: 1; padding: 2rem; }
+        .service-header .tagline { font-size: 1.1rem; color: #aaa; margin: 0.5rem 0 1.5rem 0; font-style: italic; }
+        .service-body h4 {
+            font-size: 1.2rem; color: #fff; margin-top: 2rem; margin-bottom: 1rem;
+            border-bottom: 1px solid #3a3a4a; padding-bottom: 0.5rem;
+        }
+        .service-body h4:first-child { margin-top: 0; }
+        .service-body ul { list-style: none; padding: 0; margin: 0 0 1rem 0; color: #ccc; }
+        .service-body li { margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
+        .service-body .fa-check, .service-body .fa-plus-circle { color: #42a5f5; }
+        .service-package { margin-bottom: 2.5rem; }
+        .service-package-header { display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid #3a3a4a; padding-bottom: 1rem; margin-bottom: 1.5rem; }
+        .service-package-header h4 { margin: 0; border: none; padding: 0; }
+        .service-package-header .price { font-size: 2rem; color: #7e57c2; font-weight: 700; }
+        .visuals-table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; background-color: rgba(0,0,0,0.15); border-radius: 8px; overflow: hidden; }
+        .visuals-table th, .visuals-table td { padding: 1rem; text-align: left; border-bottom: 1px solid #3a3a4a; }
+        .visuals-table thead th { background-color: rgba(255,255,255,0.05); }
+        .visuals-table tbody tr:last-child td { border-bottom: none; }
+        .visuals-table th { color: #aaa; font-size: 0.9rem; text-transform: uppercase; }
+        .visuals-table td { color: #ccc; }
+        .visuals-table .service-name { font-weight: 700; color: #fff; }
+        .visuals-table .service-price { font-weight: 700; color: #00ff99; text-align: right; white-space: nowrap; }
+        .custom-quote-section {
+            max-width: 800px; margin: 4rem auto 2rem auto; padding: 2rem; background: rgba(42, 42, 60, 0.5);
+            border: 1px solid #3a3a4a; border-radius: 16px; text-align: center;
+        }
+        .custom-quote-section h3 { font-size: 1.5rem; color: #fff; margin-top: 0; margin-bottom: 1rem; }
+        .custom-quote-section p { color: #ccc; line-height: 1.7; margin: 0; }
+        .custom-quote-section a { color: #7e57c2; text-decoration: none; font-weight: 700; transition: color 0.3s ease; }
+        .custom-quote-section a:hover { color: #a0b0ff; }
+        
+        /* --- Mix&Match Modal --- */
+        #mix-match-modal .modal-content h3 { margin-top: 0; margin-bottom: 1.5rem; text-align: center; }
+        .service-selection-container { list-style: none; padding: 0; margin: 0 0 2rem 0; max-height: 40vh; overflow-y: auto; }
+        .service-selection-container li { padding: 0.75rem 0; border-bottom: 1px solid #333; display: flex; align-items: center; justify-content: space-between; }
+        .service-selection-container li:last-child { border-bottom: none; }
+        .service-selection-container label { display: flex; align-items: center; justify-content: space-between; cursor: pointer; flex-grow: 1; }
+        .service-selection-container .item-details { flex-grow: 1; display: flex; align-items: center; }
+        .service-selection-container .item-name { color: #ddd; font-weight: 600; }
+        .service-selection-container .item-price { color: #00ff99; font-weight: 700; margin-right: 1rem; }
+        .service-selection-container input[type="checkbox"] { margin-left: 1rem; width: 20px; height: 20px; cursor: pointer; }
+        .total-price-display { margin-top: 1rem; padding: 1rem; background-color: rgba(0,0,0,0.2); border-radius: 12px; text-align: center; }
+        .total-price-display .total-label { font-size: 1rem; color: #aaa; text-transform: uppercase; }
+        .total-price-display .total-amount { font-size: 2.2rem; font-weight: 700; color: #fff; display: block; }
+        .quote-generator-area { margin-top: 1.5rem; position: relative; }
+        #quote-textarea { width: 100%; background-color: rgba(0,0,0,0.25); border: 1px solid #444; border-radius: 8px;
+            color: #ccc; font-family: 'Inter', sans-serif; font-size: 0.95rem; padding: 1rem; box-sizing: border-box; resize: vertical; min-height: 120px; }
+        .btn-copy-quote { display: block; width: 100%; margin-top: 1rem; padding: 0.8rem; border-radius: 12px;
+            border: 1px solid #42a5f5; background: linear-gradient(145deg, rgba(66, 165, 245, 0.2), rgba(66, 165, 245, 0.3));
+            color: #fff; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        .btn-copy-quote:hover { background: linear-gradient(145deg, rgba(66, 165, 245, 0.3), rgba(66, 165, 245, 0.4)); box-shadow: 0 0 15px rgba(66, 165, 245, 0.4); }
+        .btn-close-modal { display: block; width: 100%; margin-top: 0.75rem; padding: 0.8rem; border-radius: 12px;
+            border: 1px solid #888; background: linear-gradient(145deg, #4a4a5a, #3a3a4a); color: #ddd;
+            font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease; }
+        .btn-close-modal:hover { background: linear-gradient(145deg, #5a5a6a, #4a4a5a); border-color: #aaa; }
+        .copy-feedback {
+            position: absolute; bottom: 1rem; left: 50%; transform: translate(-50%, 50px); background-color: #00c853;
+            color: white; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; font-weight: 600;
+            opacity: 0; visibility: hidden; transition: all 0.4s ease; pointer-events: none;
+        }
+        .copy-feedback.visible { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+        .quantity-selector { display: flex; align-items: center; gap: 0.5rem; }
+        .quantity-selector .quantity-btn { background-color: #3a3a4a; border: 1px solid #555; color: #fff; width: 28px; height: 28px;
+            border-radius: 50%; cursor: pointer; font-size: 1.2rem; font-weight: 700; line-height: 1;
+            display: flex; align-items: center; justify-content: center; transition: background-color 0.2s; user-select: none; }
+        .quantity-selector .quantity-btn:hover { background-color: #4a4a5a; }
+        .quantity-selector .quantity-input { width: 40px; text-align: center; background-color: transparent; border: none;
+            color: #fff; font-size: 1.1rem; font-weight: 700; -moz-appearance: textfield; }
+        .quantity-selector .quantity-input::-webkit-outer-spin-button, .quantity-selector .quantity-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .modal-category-toggle { width: 100%; padding: 1rem 0.5rem; background: none; border: none; border-bottom: 1px solid #3a3a4a;
+            color: #7e57c2; text-transform: uppercase; font-size: 1rem; font-weight: 700; letter-spacing: 1px;
+            cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background-color 0.3s ease; }
+        .modal-category-toggle:hover { background-color: rgba(126, 87, 194, 0.1); }
+        .modal-category-toggle .fa-chevron-down { transition: transform 0.3s ease; }
+        .modal-category-toggle.active .fa-chevron-down { transform: rotate(180deg); }
+        .modal-category-content { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.5s ease-out, opacity 0.5s ease-out, padding 0.5s ease-out; padding: 0 1rem; }
+        .modal-category-content.visible { max-height: 1000px; opacity: 1; padding: 1rem; }
+        .info-icon {
+            display: inline-flex; align-items: center; justify-content: center; margin-left: 8px; color: #888; border: 1px solid #888;
+            border-radius: 50%; width: 18px; height: 18px; font-size: 0.8rem; font-weight: 700; cursor: pointer; position: relative; user-select: none;
+        }
+        .info-icon .info-tooltip {
+            position: absolute; bottom: 140%; left: 50%; transform: translateX(-50%); width: 250px; background-color: #1a1a2a;
+            color: #ccc; padding: 1rem; border-radius: 8px; border: 1px solid #555; font-size: 0.9rem; font-weight: 400; line-height: 1.5;
+            text-align: left; visibility: hidden; opacity: 0; transition: opacity 0.3s ease, visibility 0.3s ease, bottom 0.3s ease;
+            z-index: 10; pointer-events: none;
+        }
+        .info-icon:hover .info-tooltip { visibility: visible; opacity: 1; bottom: 125%; }
+        
         /* --- Footer Styles --- */
         .site-footer {
             position: fixed;
@@ -197,57 +943,310 @@
             font-size: 0.8rem;
             color: #888;
         }
-
     </style>
 </head>
 <body>
 
-<!-- ΚΕΦΑΛΙΔΑ -->
 <header class="site-header">
-    <img src="https://github.com/Visionsoundhub/visionsoundhubmain/blob/main/logomainbannerokwhite.jpg?raw=true" alt="Vision Sound Hub Banner">
+    <img id="header-main-banner" src="https://github.com/Visionsoundhub/visionsoundhubmain/blob/main/logomainbannerokwhite.jpg?raw=true" alt="Vision Sound Hub Banner">
+    <img id="header-beats-banner" src="https://github.com/Visionsoundhub/vybezmadethis.beats/blob/main/vybezmadethisnewlogoheaderpng.png?raw=true" alt="VybezMadeThis Banner">
 </header>
 
-<!-- ΠΛΟΗΓΗΣΗ -->
 <nav class="main-navigation">
-    <a href="#" class="nav-btn">Home</a>
-    <a href="#" class="nav-btn">Υπηρεσίες</a>
-    <a href="#" class="nav-btn">Portfolio</a>
-    <a href="#" class="nav-btn">Beats</a>
-    <a href="#" class="nav-btn">Pricing</a>
-    <a href="#" class="nav-btn">Vision Sound Hub</a>
+    <a href="#home" class="nav-btn" data-target="page-home">Home</a>
+    <a href="#services" class="nav-btn" data-target="page-pricing">Υπηρεσίες</a>
+    <a href="#portfolio" class="nav-btn" data-target="page-portfolio">Portfolio</a>
+    <a href="#beats" class="nav-btn" data-target="page-beats">Beats</a>
+    <a href="#hub" class="nav-btn" data-target="page-hub">Vision Sound Hub</a>
 </nav>
 
-<!-- ΚΥΡΙΩΣ ΠΕΡΙΕΧΟΜΕΝΟ ΣΕΛΙΔΑΣ -->
-<main class="main-content">
-    
-    <div class="two-column-layout">
-        <!-- ΑΡΙΣΤΕΡΗ ΣΤΗΛΗ -->
-        <div class="content-box fade-in-section">
-            <h2>About Vision</h2>
-            <p>Το Vision Sound προσφέρει ολοκληρωμένες λύσεις, από μουσική παραγωγή μέχρι μοντάζ και επεξεργασία βίντεο.</p>
-            <p>Projects για δημιουργούς και brands που χρειάζονται ποιότητα, άμεσο και ευέλικτο περιεχόμενο.</p>
-            <ul>
-                <li><i class="fas fa-check-circle"></i> Ηχητική επεξεργασία (mix & master)</li>
-                <li><i class="fas fa-check-circle"></i> Μουσική παραγωγή για εμπορική χρήση</li>
-                <li><i class="fas fa-check-circle"></i> Βίντεο μοντάζ & επεξεργασία για social & brand content</li>
-            </ul>
-            <img src="https://github.com/Visionsoundhub/visionsoundhubmain/blob/main/mikespeakermain.jpg?raw=true" alt="Εξοπλισμός Studio" class="content-image">
+<!-- Home Page Content -->
+<div id="page-home" class="page-content active">
+    <main class="main-content">
+        <div class="two-column-layout">
+            <div class="content-box fade-in-section">
+                <h2>About Vision</h2>
+                <p>Το Vision Sound προσφέρει ολοκληρωμένες λύσεις, από μουσική παραγωγή μέχρι μοντάζ και επεξεργασία βίντεο.</p>
+                <p>Projects για δημιουργούς και brands που χρειάζονται ποιότητα, άμεσο και ευέλικτο περιεχόμενο.</p>
+                <ul>
+                    <li><i class="fas fa-check-circle"></i> Ηχητική επεξεργασία (mix & master)</li>
+                    <li><i class="fas fa-check-circle"></i> Μουσική παραγωγή για εμπορική χρήση</li>
+                    <li><i class="fas fa-check-circle"></i> Βίντεο μοντάζ & επεξεργασία για social & brand content</li>
+                </ul>
+                <img src="https://github.com/Visionsoundhub/visionsoundhubmain/blob/main/mikespeakermain.jpg?raw=true" alt="Εξοπλισμός Studio" class="content-image">
+            </div>
+            <div class="content-box fade-in-section">
+                <h2>Το Όραμα</h2>
+                <p>Δεν θέλουμε να φτιάξουμε απλά άλλο ένα στούντιο.</p>
+                <p>Το όραμά μας είναι να χτίσουμε έναν δημιουργικό πολυχώρο για όσους αισθάνονται διαφορετικοί.</p>
+                <p>Έναν χώρο ανοιχτό για μικρούς, νέους και μεγάλους, με δράσεις που έχουν στο κέντρο τους την έκφραση και τη σύνδεση.</p>
+                <p><strong>Εδώ, η διαφορετικότητα δεν θα είναι εμπόδιο.<br>Θα είναι η ταυτότητα.</strong></p>
+                <a href="#hub" class="cta-btn nav-btn" data-target="page-hub">Γίνε Μέρος του Vision</a>
+            </div>
         </div>
+    </main>
+</div>
 
-        <!-- ΔΕΞΙΑ ΣΤΗΛΗ -->
-        <div class="content-box fade-in-section">
-            <h2>Το Όραμα</h2>
-            <p>Δεν θέλουμε να φτιάξουμε απλά άλλο ένα στούντιο.</p>
-            <p>Το όραμά μας είναι να χτίσουμε έναν δημιουργικό πολυχώρο για όσους αισθάνονται διαφορετικοί.</p>
-            <p>Έναν χώρο ανοιχτό για μικρούς, νέους και μεγάλους, με δράσεις που έχουν στο κέντρο τους την έκφραση και τη σύνδεση.</p>
-            <p><strong>Εδώ, η διαφορετικότητα δεν θα είναι εμπόδιο.<br>Θα είναι η ταυτότητα.</strong></p>
-            <a href="#" class="cta-btn">Γίνε Μέρος του Vision</a>
+<!-- Pricing/Services Page Content -->
+<div id="page-pricing" class="page-content">
+    <main class="main-content services-section">
+        <h2 class="section-title">Τιμοκατάλογος Υπηρεσιών</h2>
+        <div class="mix-match-container">
+            <button id="open-mix-match-btn" class="btn-mix-match"><i class="fas fa-blender-phone"></i> Φτιάξε το Δικό σου Πακέτο</button>
+        </div>
+        <div class="service-accordion">
+            <!-- Service 1: Mix & Master -->
+            <div class="accordion-item">
+                <button class="service-toggle-btn">
+                    <span><i class="fas fa-sliders-h"></i> Mix & Master</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="service-content">
+                    <div class="service-header">
+                        <p class="tagline">Επαγγελματικός ήχος με ψυχή. Επιλέξτε μίξη, mastering ή και τα δύο.</p>
+                    </div>
+                    <div class="service-body">
+                        <div class="service-package" data-service-name="Μίξη (Mixing)" data-service-price="30" data-service-category="audio" data-service-info="Ρύθμιση επιπέδων, καθαρές φωνές, δυναμικά τύμπανα, καθαρισμός θορύβων & ισορροπία.">
+                            <div class="service-package-header"><h4>Μίξη (Mixing)</h4><span class="price">€30</span></div>
+                            <ul>
+                                <li><i class="fas fa-check"></i> Ρύθμιση επιπέδων</li>
+                                <li><i class="fas fa-check"></i> Καθαρές φωνές / δυναμικά τύμπανα</li>
+                                <li><i class="fas fa-check"></i> Καθαρισμός θορύβων & ισορροπία</li>
+                            </ul>
+                        </div>
+                        <div class="service-package" data-service-name="Mastering" data-service-price="20" data-service-category="audio" data-service-info="Τελική ένταση (loudness), EQ, stereo image & glue. Έτοιμο για Spotify, YouTube, παντού.">
+                             <div class="service-package-header"><h4>Μάστερινγκ (Mastering)</h4><span class="price">€20</span></div>
+                            <ul>
+                                <li><i class="fas fa-check"></i> Τελική ένταση / loudness</li>
+                                <li><i class="fas fa-check"></i> EQ / stereo image / glue</li>
+                                <li><i class="fas fa-check"></i> Έτοιμο για Spotify, YouTube, παντού.</li>
+                            </ul>
+                        </div>
+                        <div class="extras-section">
+                            <h4>Extras (Ισχύουν και για τις δύο υπηρεσίες)</h4>
+                            <ul>
+                                <li data-service-name="Studio Session (Αττική - ανά ώρα)" data-service-price="10" data-service-category="audio" data-quantifiable="true" data-service-info="Ωριαία χρέωση για ηχογράφηση ή παραγωγή στο στούντιο (μόνο για Αττική)."><i class="fas fa-plus-circle"></i><strong>Studio Session (Αττική):</strong> +10€/ώρα</li>
+                                <li data-service-name="Pitch Correction (Autotune)" data-service-price="10" data-service-category="audio" data-service-info="Επαγγελματική διόρθωση φωνητικών (intonation) με κορυφαία εργαλεία."><i class="fas fa-plus-circle"></i><strong>Pitch Correction:</strong> +10€</li>
+                                <li data-service-name="Extra Κανάλια (ανά 3)" data-service-price="5" data-service-category="audio" data-quantifiable="true" data-service-info="Χρέωση για κάθε 3 επιπλέον κανάλια (stems) πέρα από το βασικό όριο."><i class="fas fa-plus-circle"></i><strong>Extra Κανάλια:</strong> +5€ ανά 3 νέα κανάλια</li>
+                                <li><i class="fas fa-plus-circle"></i><strong>Διάρκεια:</strong> Μέχρι 3:30 λεπτά</li>
+                                <li data-service-name="Επιπλέον Χρόνος (ανά λεπτό)" data-service-price="7" data-service-category="audio" data-quantifiable="true" data-service-info="Χρέωση για κάθε επιπλέον λεπτό διάρκειας του κομματιού πέρα από τα 3:30."><i class="fas fa-plus-circle"></i><strong>Επιπλέον Χρόνος:</strong> +7€ για κάθε επόμενο λεπτό</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Service 2: Covers & Visuals -->
+            <div class="accordion-item">
+                <button class="service-toggle-btn"><span><i class="fas fa-palette"></i> Covers & Visuals</span><i class="fas fa-chevron-down"></i></button>
+                <div class="service-content">
+                    <div class="service-header"><p class="tagline">Εικόνες με ταυτότητα, συνδυάζοντας AI και ανθρώπινη αισθητική.</p></div>
+                    <div class="service-body">
+                        <table class="visuals-table">
+                            <tbody>
+                                <tr data-service-name="SoulBlend Cover" data-service-price="35" data-service-category="visual" data-service-info="Δημιουργία εξωφύλλου με συνδυασμό AI και επεξεργασίας στο Photoshop για ένα μοναδικό, curated αποτέλεσμα.">
+                                    <td><div class="service-name">SoulBlend</div><small>AI + Photoshop, curated art image</small></td>
+                                    <td class="service-price">35–50€</td>
+                                </tr>
+                                <tr data-service-name="AlterMe Cover" data-service-price="50" data-service-category="visual" data-service-info="Μετατρέπουμε τη φωτογραφία σας σε έναν μοναδικό χαρακτήρα (π.χ. anime, cartoon, fantasy) για το εξώφυλλό σας.">
+                                    <td><div class="service-name">AlterMe</div><small>Μεταμόρφωση από φωτογραφία σε χαρακτήρα</small></td>
+                                    <td class="service-price">50–70€</td>
+                                </tr>
+                                <tr data-service-name="RAWtoCOVER" data-service-price="40" data-service-category="visual" data-service-info="Επαγγελματική επεξεργασία (color grading, retouching) της δικής σας φωτογραφίας για να γίνει ένα εντυπωσιακό εξώφυλλο.">
+                                    <td><div class="service-name">RAWtoCOVER</div><small>Επεξεργασία πραγματικής φωτογραφίας</small></td>
+                                    <td class="service-price">40–55€</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Service 3: Video Editing -->
+            <div class="accordion-item">
+                <button class="service-toggle-btn"><span><i class="fas fa-video"></i> Video Editing & Promos</span><i class="fas fa-chevron-down"></i></button>
+                <div class="service-content">
+                    <div class="service-body">
+                        <div data-service-name="SocialScroll (1 video)" data-service-price="60" data-service-category="video" data-service-info="Δημιουργία 1 promo video με εικόνες και stock footage, ιδανικό για social media."></div>
+                        <div data-service-name="Artist Single Reel Pack" data-service-price="55" data-service-category="video" data-service-info="Περιλαμβάνει 1-2 ώρες γύρισμα, μοντάζ για 1 τελικό reel και παράδοση των raw αρχείων."></div>
+                        <div data-service-name="AI Single Promo Video" data-service-price="140" data-service-category="video" data-service-info="Δημιουργία 1 promo video (15-30 δευτ.) με την τεχνολογία AI της Google (VEo 3), μαζί με επαγγελματικό μοντάζ."></div>
+                        <h4>SocialScroll</h4>
+                        <p class="tagline" style="margin-top: -0.5rem; margin-bottom: 1rem;">Promo videos με εικόνες & stock footage.</p>
+                        <table class="visuals-table"><tbody><tr><td>1 video</td><td class="service-price">60€</td></tr><tr><td>3-pack</td><td class="service-price">150€</td></tr></tbody></table>
+                        <h4>ReCut</h4>
+                        <p class="tagline" style="margin-top: -0.5rem; margin-bottom: 1rem;">Μοντάζ με πλάνα του πελάτη.</p>
+                        <table class="visuals-table"><tbody><tr data-service-name="ReCut (1 video)" data-service-price="80" data-service-category="video" data-service-info="Αναλαμβάνουμε το μοντάζ του δικού σας υλικού για τη δημιουργία 1 τελικού video."><td>1 video</td><td class="service-price">80–100€</td></tr></tbody></table>
+                        <h4>Artist Shot+Cut</h4>
+                        <table class="visuals-table"><tbody><tr><td>Single Reel Pack</td><td>1 γύρισμα (1–2 ώρες), 1 reel, raw αρχεία</td><td class="service-price">55–60€</td></tr></tbody></table>
+                        <h4><i class="fas fa-robot"></i> AI Video με VEo 3 – Vision Sound Cut</h4>
+                        <table class="visuals-table"><tbody><tr><td>Single Promo Video</td><td>1 video 15–30 δευτ. + μοντάζ</td><td class="service-price">140€</td></tr></tbody></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="custom-quote-section">
+            <h3>Έχετε Ειδικές Απαιτήσεις;</h3>
+            <p>Για οποιαδήποτε απορία ή για να συζητήσουμε μια προσαρμοσμένη τιμή για τις ανάγκες σας, μη διστάσετε να επικοινωνήσετε. Στείλτε ένα αναλυτικό email με το project σας στο <a href="mailto:studiovisionsound@gmail.com">studiovisionsound@gmail.com</a> ή ένα μήνυμα στο <a href="https://www.instagram.com/visionsoundhub.gr" target="_blank" rel="noopener noreferrer">Instagram</a> και θα λάβετε άμεσα μια εξατομικευμένη προσφορά.</p>
+        </div>
+    </main>
+</div>
+
+<!-- Portfolio Page Content -->
+<div id="page-portfolio" class="page-content">
+    <main class="main-content">
+        <h2 class="page-title">Portfolio</h2>
+        <section class="brands-section">
+            <button class="section-toggle-btn" id="toggle-brands-btn">
+                Brands που μας εμπιστεύτηκαν <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="brands-container" id="brands-container">
+                <div class="brand-item"><img src="https://portfolio.visionsoundhub.gr/assets/images/gallery01/9ba71560.jpg?v=1894d6d4" alt="Landing Minds Records"><small>Landing Minds Records</small></div>
+                <div class="brand-item"><img src="https://portfolio.visionsoundhub.gr/assets/images/gallery01/a4042465.png?v=1894d6d4" alt="Panik Records"><small>Panik Records</small></div>
+                <div class="brand-item"><img src="https://portfolio.visionsoundhub.gr/assets/images/gallery01/a5197dcf.jpg?v=1894d6d4" alt="On music"><small>On music</small></div>
+                <div class="brand-item"><img src="https://portfolio.visionsoundhub.gr/assets/images/gallery01/dbd2a1fd.jpg?v=1894d6d4" alt="DVC Studios"><small>DVC Studios</small></div>
+                <div class="brand-item"><img src="https://portfolio.visionsoundhub.gr/assets/images/gallery01/a46276dc.jpg?v=1894d6d4" alt="Manos Del Mago"><small>Manos Del Mago</small></div>
+                <div class="brand-item"><img src="https://portfolio.visionsoundhub.gr/assets/images/gallery01/70bd5911.jpg?v=1894d6d4" alt="elvhx"><small>elvhx</small></div>
+                <div class="brand-item"><img src="https://portfolio.visionsoundhub.gr/assets/images/gallery01/96ec1d9b.jpg?v=1894d6d4" alt="Los Pampas"><small>Los Pampas</small></div>
+                <div class="brand-item"><img src="https://portfolio.visionsoundhub.gr/assets/images/gallery01/8b1b32cc.jpg?v=1894d6d4" alt="Kokokytha Cocktail Bar"><small>Kokokytha Cocktail Bar</small></div>
+                <div class="brand-item"><img src="https://vybezmadethitest.carrd.co/assets/images/image01.jpg?v=99bc8b72" alt="First Life Ambulance"><small>First Life Ambulance</small></div>
+            </div>
+        </section>
+        <section class="portfolio-section">
+            <div class="filter-controls" id="portfolio-filters">
+                <button class="filter-btn active" data-filter="music-videos">Music Videos</button>
+                <button class="filter-btn" data-filter="commercial">Commercial Videos</button>
+                <button class="filter-btn" data-filter="mix-master">Mix/Master</button>
+                <button class="filter-btn" data-filter="production">Music Production</button>
+                <button class="filter-btn" data-filter="veo3-ai">VEO3 AI</button>
+            </div>
+            <div class="portfolio-list" id="portfolio-list"></div>
+        </section>
+    </main>
+</div>
+
+<!-- Beats Page Content -->
+<div id="page-beats" class="page-content">
+    <main class="main-content">
+        <h1 class="page-title">VybezMadeThis</h1>
+        <div class="top-bar">
+            <div class="search-container"><input type="text" id="search-input" placeholder="Αναζήτηση με τίτλο ή tag..."></div>
+            <button id="vibe-search-btn">Vibe Search</button>
+        </div>
+        <div class="category-filter">
+            <button class="filter-btn active" data-category="all">Όλα</button>
+            <button class="filter-btn" data-category="trap">Trap / Drill</button>
+            <button class="filter-btn" data-category="boombap">Rap / Boombap</button>
+            <button class="filter-btn" data-category="latin">Latin Urban / Afro</button>
+            <button class="filter-btn" data-category="lofi">Lofi</button>
+            <button class="filter-btn" data-category="custom">Custom</button>
+            <button class="filter-btn" data-category="vault">Vault Beats</button>
+            <button class="filter-btn" data-category="ai">AI Access</button>
+        </div>
+        <div id="info-boxes-container">
+            <div class="info-box" id="aiInfoBox" style="display:none;"><p>Τα beats στην κατηγορία AI Access είναι δημιουργημένα μερικώς από εργαλεία τεχνητής νοημοσύνης. Η δομή και η μίξη έχει γίνει χειροποίητα από τον Vybezmadethis στο Vision Sound Studio. Αφορούν αποκλειστικά leasing χρήση.</p></div>
+            <div class="info-box" id="vaultInfoBox" style="display: none;"><p>Τα Vault Beats είναι beats που δεν μπορούν πλέον να επεξεργαστούν περαιτέρω. Διατίθενται σε πιο προσιτή τιμή και διατηρούν την ενέργεια και το vibe τους για όσους ψάχνουν ιδιαίτερους ήχους με low budget.</p></div>
+            <div class="info-box" id="customInfoBox" style="display: none;"><p>Εδώ θα βρείτε δείγματα από custom παραγωγές. Αν θέλεις το δικό σου μοναδικό beat, στείλε email στο <a href="mailto:studiovisionsound@gmail.com" style="color: #7e57c2;">studiovisionsound@gmail.com</a>. Η διαδικασία για custom beat ξεκινά από 100€.</p></div>
+            <div class="info-box" id="generalInfoBox" style="display: block;"><p>Όλες οι τιμές αφορούν την αγορά του beat σε μορφή MP3 και WAV. Για παράδοση των stems, υπάρχει επιπλέον χρέωση (20€).</p></div>
+        </div>
+        <div class="beat-list" id="beatList"></div>
+    </main>
+</div>
+
+<!-- Vision Sound Hub Page Content -->
+<div id="page-hub" class="page-content">
+    <main class="main-content">
+        <h1 class="page-title">Vision Sound Hub</h1>
+        <section class="hub-section fade-in-section">
+            <div class="hub-section-text">
+                <h2>Δημιουργικές Δράσεις: Μουσική & Σύνδεση</h2>
+                <p>Το όραμά μας είναι να χτίσουμε έναν δημιουργικό πολυχώρο για όσους αισθάνονται διαφορετικοί. Έναν χώρο ανοιχτό για μικρούς, νέους και μεγάλους, με δράσεις που έχουν στο κέντρο τους την έκφραση και τη σύνδεση.</p>
+                <p>Μέσα από εργαστήρια όπως η δημιουργία ρυθμών με κουβάδες ή το live looping με απλό εξοπλισμό, μαθαίνουμε πώς μπορούμε να κάνουμε μουσική με τα πάντα και, το κυριότερο, να περνάμε καλά.</p>
+                <a href="#" class="cta-btn disabled">Έρχεται Σύντομα</a>
+            </div>
+            <div class="hub-section-image"><img src="https://github.com/Visionsoundhub/vybezmadethis.beats/blob/main/oidraseismasok.jpg?raw=true" alt="Δημιουργικές Δράσεις με μουσικά όργανα και κουβάδες"></div>
+        </section>
+        <section class="hub-section fade-in-section">
+            <div class="hub-section-image"><img src="https://github.com/Visionsoundhub/vybezmadethis.beats/blob/main/zairokthub.jpg?raw=true" alt="ZAIROK Manga Cover Art"></div>
+            <div class="hub-section-text">
+                <h2>ZAIROK: The Manga</h2>
+                <p>Το ZAIROK είναι ένα manga που γράφεται αυτή τη στιγμή, με το πρώτο τεύχος να είναι ήδη έτοιμο. Η εικονογράφηση ξεκινά σύντομα, και μπορείτε να παρακολουθείτε την εξέλιξη μέσα από τα social media.</p>
+                <p>Αυτή η ενότητα θα λειτουργεί ως το κεντρικό σημείο για όλες τις ενημερώσεις, αποκλειστικό περιεχόμενο, και μελλοντικά, για το επίσημο merchandise.</p>
+                <a href="#" class="cta-btn disabled">Έρχεται Σύντομα</a>
+            </div>
+        </section>
+        <section class="hub-section fade-in-section">
+            <div class="hub-section-text">
+                <h2>Μια Εφαρμογή για Δημιουργική Έκφραση</h2>
+                <p>Ετοιμάζουμε μια εφαρμογή ειδικά σχεδιασμένη για νευροδιαφορετικά παιδιά και εφήβους, που μετατρέπει τον κόσμο σε ένα μουσικό όργανο. Οι χρήστες θα μπορούν να ηχογραφούν ήχους από το περιβάλλον τους, να τους λουπάρουν, και να φτιάχνουν τα δικά τους drum kits.</p>
+                <p>Με "αποστολές" που θα τους καθοδηγούν και μια λειτουργία ελεύθερης εξερεύνησης, η εφαρμογή θα κάνει τη μουσική δημιουργία ένα προσβάσιμο και διασκεδαστικό παιχνίδι.</p>
+                <a href="#" class="cta-btn disabled">Έρχεται Σύντομα</a>
+            </div>
+            <div class="hub-section-image"><img src="https://github.com/Visionsoundhub/vybezmadethis.beats/blob/main/soundhuntersapp.jpg?raw=true" alt="Mockup της εφαρμογής Sound Hunters"></div>
+        </section>
+    </main>
+</div>
+
+
+<!-- ALL MODALS -->
+<!-- Portfolio Video Modal -->
+<div id="video-modal" class="modal-overlay">
+    <div class="modal-content">
+        <span class="modal-close" id="modal-close-btn">×</span>
+        <div class="video-container" id="youtube-player-container"><iframe id="video-iframe" src="" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
+        <div class="external-link-container" id="external-link-preview">
+            <img id="external-preview-image" src="" alt="Video Preview">
+            <a id="external-link-btn" href="#" target="_blank" class="btn-external">
+                <i id="external-link-icon" class="fab"></i><span id="external-link-text"></span>
+            </a>
         </div>
     </div>
+</div>
 
-</main>
+<!-- Beats Vibe Search Modal -->
+<div class="vibe-modal-overlay" id="vibe-modal">
+    <div class="vibe-modal-content" id="vibe-modal-content">
+        <canvas id="vibe-visualizer"></canvas>
+        <div class="vibe-text-wrapper">
+            <span class="vibe-modal-close" id="vibe-modal-close">&times;</span>
+            <h2>Πώς νιώθεις σήμερα;</h2>
+            <p>Διάλεξε ένα vibe για να βρεις το κατάλληλο beat.</p>
+            <div class="vibe-bubbles" id="vibe-bubbles-container"></div>
+            <button id="shuffle-vibes-btn"><i class="fas fa-dice"></i> Άλλαξε Vibe</button>
+        </div>
+    </div>
+</div>
 
-<!-- ΥΠΟΣΕΛΙΔΟ -->
+<!-- Pricing Mix & Match Modal -->
+<div id="mix-match-modal" class="modal-overlay">
+    <div class="modal-content">
+        <span class="modal-close" id="mix-match-close-btn">&times;</span>
+        <h3>Φτιάξε το Πακέτο σου</h3>
+        <div class="service-selection-container" id="service-selection-container"></div>
+        <div class="total-price-display">
+            <span class="total-label">Ενδεικτική Τιμή</span>
+            <span class="total-amount" id="total-price">€0</span>
+        </div>
+        <div class="quote-generator-area">
+            <textarea id="quote-textarea" readonly rows="6" placeholder="Επιλέξτε υπηρεσίες για να δημιουργηθεί το μήνυμα..."></textarea>
+            <button id="copy-quote-btn" class="btn-copy-quote"><i class="fas fa-copy"></i> Αντιγραφή Κειμένου</button>
+            <button id="close-modal-btn" class="btn-close-modal">Κλείσιμο</button>
+            <div class="copy-feedback" id="copy-feedback">Το κείμενο αντιγράφηκε!</div>
+        </div>
+    </div>
+</div>
+
+<!-- Sticky Player for Beats -->
+<div id="sticky-player">
+    <div class="track-info"><p class="track-title" id="sticky-player-title">Επίλεξε ένα beat</p></div>
+    <div class="player-controls-wrapper">
+        <div class="custom-audio-player" id="main-player">
+            <button class="play-pause-btn"><i class="fas fa-play"></i></button>
+            <div class="progress-bar-container"><div class="progress-bar"></div></div>
+            <div class="time-display">0:00 / 0:00</div>
+        </div>
+    </div>
+    <div class="player-actions"></div>
+    <audio id="main-audio-element" preload="metadata"></audio>
+</div>
+
 <footer class="site-footer">
     <div class="footer-links">
         <a href="mailto:studiovisionsound@gmail.com"><i class="fas fa-envelope"></i> Email</a>
@@ -258,22 +1257,514 @@
 </footer>
 
 <script>
-// --- ΛΟΓΙΚΗ ΓΙΑ ΤΑ ANIMATIONS ---
 document.addEventListener('DOMContentLoaded', function() {
-    const observer = new IntersectionObserver((entries) => {
+
+    // --- NAVIGATION LOGIC ---
+    const navButtons = document.querySelectorAll('.nav-btn');
+    const pages = document.querySelectorAll('.page-content');
+    const siteHeader = document.querySelector('.site-header');
+
+    function switchPage(targetId) {
+        // Handle pages
+        pages.forEach(page => {
+            page.classList.toggle('active', page.id === targetId);
+        });
+        
+        // Handle nav button active state
+        navButtons.forEach(button => {
+            button.classList.toggle('active', button.dataset.target === targetId);
+        });
+
+        // Handle header sliding effect
+        if (targetId === 'page-beats') {
+            siteHeader.classList.add('beats-active');
+        } else {
+            siteHeader.classList.remove('beats-active');
+        }
+        
+        // Scroll to top
+        window.scrollTo(0, 0);
+    }
+
+    navButtons.forEach(button => {
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            const targetId = button.dataset.target;
+            if (targetId) {
+                switchPage(targetId);
+                history.pushState(null, null, button.getAttribute('href'));
+            }
+        });
+    });
+
+    window.addEventListener('popstate', () => {
+        const hash = window.location.hash.substring(1);
+        const targetButton = document.querySelector(`.nav-btn[href="#${hash}"]`);
+        const targetId = targetButton ? targetButton.dataset.target : 'page-home';
+        switchPage(targetId);
+    });
+
+    function loadInitialPage() {
+        const hash = window.location.hash.substring(1);
+        const targetButton = document.querySelector(`.nav-btn[href="#${hash}"]`);
+        const targetId = targetButton ? targetButton.dataset.target : 'page-home';
+        switchPage(targetId);
+    }
+    
+    loadInitialPage();
+
+
+    // --- HOME & HUB PAGE ANIMATION SCRIPT ---
+    const animationObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('is-visible');
             }
         });
     }, {
-        threshold: 0.1 // Trigger when 10% of the element is visible
+        threshold: 0.1
     });
 
-    const sections = document.querySelectorAll('.fade-in-section');
-    sections.forEach(section => {
-        observer.observe(section);
+    const sectionsToAnimate = document.querySelectorAll('.fade-in-section');
+    sectionsToAnimate.forEach(section => {
+        animationObserver.observe(section);
     });
+
+    // --- PORTFOLIO PAGE SCRIPT ---
+    (function portfolioScript() {
+        const portfolioData = [
+            { id: 1,  source: 'youtube', category: 'music-videos', videoId: 'UO853tdpiK0', title: 'Παυλίνα Βουλγαράκη - Μπορείς ακόμα' },
+            { id: 2,  source: 'youtube', category: 'music-videos', videoId: 'GgR1RQFVSO4', title: 'Παυλίνα Βουλγαράκη - Ποτέ και πουθενά' },
+            { id: 3,  source: 'youtube', category: 'music-videos', videoId: '5G6uiwikQ_A', title: 'Dark Mc x Fuji Latifudia' },
+            { id: 4,  source: 'youtube', category: 'music-videos', videoId: 'qf6Q9xSKTf0', title: 'Fuji Latifudia - Kyr astunome' },
+            { id: 5,  source: 'youtube', category: 'music-videos', videoId: 'OzLfhPiSyU0', title: 'Black Vybez S.O.S' },
+            { id: 6,  source: 'youtube', category: 'music-videos', videoId: 'JhegU1T3OfA', title: 'Black Vybez x Fuji Latifudia - Selini' },
+            { id: 7,  source: 'youtube', category: 'music-videos', videoId: 'lhx_29DeHsA', title: 'Black vybez x Michalis Megaloudis - Me miras cantando' },
+            { id: 8,  source: 'tiktok',    category: 'commercial', videoUrl: 'https://www.tiktok.com/@lospampas.ath/video/7184438128722152710', thumbnailUrl: 'https://portfolio.visionsoundhub.gr/assets/images/image04.jpg?v=375f5d5d', title: 'Los Pampas Video 1' },
+            { id: 9,  source: 'tiktok',    category: 'commercial', videoUrl: 'https://www.tiktok.com/@lospampas.ath/video/7070077247012605190', thumbnailUrl: 'https://portfolio.visionsoundhub.gr/assets/images/image06.jpg?v=375f5d5d', title: 'Los Pampas Video 2' },
+            { id: 10, source: 'tiktok',    category: 'commercial', videoUrl: 'https://www.tiktok.com/@kolokithacocktailrooom/video/7507256646784109846', thumbnailUrl: 'https://portfolio.visionsoundhub.gr/assets/images/image05.jpg?v=375f5d5d', title: 'KoloKytha anniversary' },
+            { id: 11, source: 'instagram', category: 'commercial', videoUrl: 'https://www.instagram.com/p/DJ6kDKNK-Vx/', thumbnailUrl: 'https://portfolio.visionsoundhub.gr/assets/images/image07.jpg?v=375f5d5d', title: 'Kolokytha video 2' },
+            { id: 12, source: 'tiktok',    category: 'commercial', videoUrl: 'https://www.tiktok.com/@elvhx/video/7315325047663594785', thumbnailUrl: 'https://portfolio.visionsoundhub.gr/assets/images/image08.jpg?v=375f5d5d', title: 'elvhx promo' },
+            { id: 13, source: 'youtube',   category: 'commercial', videoId: 'kqytCJjPf7I',      title: 'elvhx commercial 1' },
+            { id: 14, source: 'youtube',   category: 'commercial', videoId: 'Z7_99FQpOUs',      title: 'elvhx commercial 2' },
+            { id: 15, source: 'youtube', category: 'mix-master', videoId: 'EyOnynqER08', title: 'Mix/Master Sample 1' },
+            { id: 16, source: 'youtube', category: 'mix-master', videoId: 'JhegU1T3OfA', title: 'Mix/Master Sample 2' },
+            { id: 17, source: 'youtube', category: 'mix-master', videoId: 'PXDuXEhgWpA', title: 'Mix/Master Sample 3' },
+            { id: 18, source: 'youtube', category: 'mix-master', videoId: 'GaAxoHlUy3A', title: 'Mix/Master Sample 4' },
+            { id: 19, source: 'youtube', category: 'mix-master', videoId: 'IlJQMKf4TH0', title: 'Mix/Master Sample 5' },
+            { id: 20, source: 'youtube', category: 'production', videoId: 'xRuzgLbnCJI', title: 'Shadows & Silence' },
+            { id: 21, source: 'youtube', category: 'production', videoId: 'FyHyTIgrh7o', title: 'The Fall Of the Kingdom' },
+            { id: 22, source: 'youtube', category: 'production', videoId: 'Uqg8IDT3Ekc', title: 'Manos Del Mago - Anapnoi' },
+            { id: 23, source: 'youtube', category: 'production', videoId: 'OzLfhPiSyU0', title: 'Black Vybez - S.O.S' },
+            { id: 24, source: 'youtube', category: 'production', videoId: 'hxKwxVAzodE', title: 'Fuji Latifudia - Staxtopouta' },
+            { id: 25, source: 'youtube', category: 'production', videoId: '6EjFwqRDLWc', title: 'Black Vybez - Εγώ και εσύ' },
+            { id: 26, source: 'youtube', category: 'production', videoId: '8t1iNPkiG1c', title: 'Fuji Latifudia x Manos Del Mago x Black Vybez - Ζούμε χωριστά' },
+            { id: 27, source: 'youtube', category: 'production', videoId: 'GkjO_zmnCvQ', title: 'Black Vybez - Mayday' },
+            { id: 28, source: 'youtube', category: 'production', videoId: '7CS621vdeUo', title: 'Manos del mago - Mami' },
+            { id: 29, source: 'youtube', category: 'production', videoId: 'upysqHDCGRE', title: 'Black Vybez x Fuji Latifudia - Nanga' },
+            { id: 30, source: 'instagram', category: 'veo3-ai', videoUrl: 'https://www.instagram.com/reel/DLS-aCYPuZO/', thumbnailUrl: 'https://maintestvision.carrd.co/assets/images/image03.jpg?v=daeffd27', title: 'VEO3 AI Showcase 1' },
+            { id: 31, source: 'instagram', category: 'veo3-ai', videoUrl: 'https://www.instagram.com/reel/DLstKzbis7c/', thumbnailUrl: 'https://maintestvision.carrd.co/assets/images/image01.jpg?v=daeffd27', title: 'VEO3 AI Showcase 2' },
+            { id: 32, source: 'youtube',   category: 'veo3-ai', videoId: 'NN_gARbWfW8', title: 'VEO3 AI Showcase 3' },
+            { id: 33, source: 'youtube',   category: 'veo3-ai', videoId: 'mcejoz018w0', title: 'VEO3 AI Showcase 4' },
+            { id: 34, source: 'youtube',   category: 'veo3-ai', videoId: 'U0Js7WNAA2E', title: 'VEO3 AI Showcase 5' }
+        ];
+        const portfolioFilterContainer = document.getElementById('portfolio-filters');
+        const portfolioList = document.getElementById('portfolio-list');
+        const modal = document.getElementById('video-modal');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+        const toggleBrandsBtn = document.querySelector('#page-portfolio #toggle-brands-btn');
+        const brandsContainer = document.querySelector('#page-portfolio #brands-container');
+        const youtubePlayerContainer = document.getElementById('youtube-player-container');
+        const videoIframe = document.getElementById('video-iframe');
+        const externalLinkPreview = document.getElementById('external-link-preview');
+        const externalPreviewImage = document.getElementById('external-preview-image');
+        const externalLinkBtn = document.getElementById('external-link-btn');
+        const externalLinkIcon = document.getElementById('external-link-icon');
+        const externalLinkText = document.getElementById('external-link-text');
+
+        function openPortfolioModal(item) {
+            if (item.source === 'youtube') {
+                youtubePlayerContainer.style.display = 'block';
+                externalLinkPreview.style.display = 'none';
+                videoIframe.src = `https://www.youtube.com/embed/${item.videoId}?autoplay=1&rel=0`;
+            } else {
+                youtubePlayerContainer.style.display = 'none';
+                externalLinkPreview.style.display = 'block';
+                externalPreviewImage.src = item.thumbnailUrl;
+                externalLinkBtn.href = item.videoUrl;
+                if (item.source === 'tiktok') {
+                    externalLinkIcon.className = 'fab fa-tiktok';
+                    externalLinkText.textContent = 'Δες το στο TikTok';
+                } else if (item.source === 'instagram') {
+                    externalLinkIcon.className = 'fab fa-instagram';
+                    externalLinkText.textContent = 'Δες το στο Instagram';
+                }
+            }
+            modal.classList.add('visible');
+            document.body.classList.add('modal-open');
+        }
+        function closePortfolioModal() {
+            modal.classList.remove('visible');
+            document.body.classList.remove('modal-open');
+            videoIframe.src = ''; 
+        }
+        function renderPortfolioItems(filterValue) {
+            if (!portfolioList) return;
+            portfolioList.classList.add('fading');
+            setTimeout(() => {
+                portfolioList.innerHTML = '';
+                const filteredItems = portfolioData.filter(item => item.category === filterValue);
+                if (filteredItems.length === 0) {
+                    portfolioList.innerHTML = `<p style="color: #888;">Δεν υπάρχουν διαθέσιμα έργα για αυτή την κατηγορία.</p>`;
+                } else {
+                    filteredItems.forEach(item => {
+                        const thumbnailUrl = item.source === 'youtube' ? `https://i.ytimg.com/vi/${item.videoId}/mqdefault.jpg` : item.thumbnailUrl;
+                        const itemElement = document.createElement('div');
+                        itemElement.className = 'portfolio-item';
+                        itemElement.innerHTML = `<div class="portfolio-item-thumbnail"><img src="${thumbnailUrl}" alt="${item.title}" loading="lazy"><div class="overlay"><i class="fas fa-play"></i></div></div><div class="portfolio-item-info"><h3 class="portfolio-item-title">${item.title}</h3></div>`;
+                        itemElement.addEventListener('click', () => openPortfolioModal(item));
+                        portfolioList.appendChild(itemElement);
+                    });
+                }
+                portfolioList.classList.remove('fading');
+            }, 200);
+        }
+
+        if (portfolioFilterContainer) {
+            const filterButtons = portfolioFilterContainer.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    if (this.classList.contains('active')) return;
+                    const currentActive = portfolioFilterContainer.querySelector('.filter-btn.active');
+                    if (currentActive) currentActive.classList.remove('active');
+                    this.classList.add('active');
+                    renderPortfolioItems(this.dataset.filter);
+                });
+            });
+            const initialActiveButton = portfolioFilterContainer.querySelector('.filter-btn.active');
+            if (initialActiveButton) renderPortfolioItems(initialActiveButton.dataset.filter);
+        }
+        if (toggleBrandsBtn) {
+            toggleBrandsBtn.addEventListener('click', () => {
+                toggleBrandsBtn.classList.toggle('active');
+                brandsContainer.classList.toggle('visible');
+            });
+        }
+        if (modalCloseBtn) modalCloseBtn.addEventListener('click', closePortfolioModal);
+        if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) closePortfolioModal(); });
+    })();
+
+    // --- BEATS PAGE SCRIPT ---
+    (function beatsScript() {
+        const beatsData = [
+            { id: 5, title: 'Marios Beat (Custom Sample)', audioSrc: 'https://github.com/Visionsoundhub/vybezmadethis.beats/raw/refs/heads/main/Marios%20beat%20extended%2099BPM%20Eminor.mp3', price: null, status: 'available', category: 'custom', tags: ['custom', 'melodic', 'emotional', 'sad'] },
+            { id: 3, title: 'AI Experiment #1', audioSrc: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', price: '15€', status: 'available', category: 'ai', tags: ['experimental', 'electronic', 'future'] },
+            { id: 4, title: 'Old Vault Sketch', audioSrc: '', price: '30€', status: 'sold', category: 'vault', tags: ['raw', 'draft', 'lofi-sketch'] },
+            { id: 6, title: 'Fire Bars', audioSrc: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', price: '80€', status: 'available', category: 'trap', tags: ['aggressive', 'hard', 'drill'] },
+            { id: 7, title: 'Love Sunset', audioSrc: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3', price: '80€', status: 'available', category: 'lofi', tags: ['love', 'romantic', 'smooth', 'chill'] }
+        ];
+        const allVibes = [
+            { name: 'Ερωτευμένος', tags: ['love', 'romantic', 'smooth'] }, { name: 'Μελαγχολικός', tags: ['sad', 'emotional', 'dark', 'melancholic'] },
+            { name: 'Για μπάρες', tags: ['aggressive', 'hard', 'drill', 'rap'] }, { name: 'Χαλαρός', tags: ['chill', 'lofi', 'relax'] },
+            { name: 'Για πάρτι', tags: ['party', 'upbeat', 'dancehall', 'afro'] }, { name: 'Κινηματογραφικός', tags: ['epic', 'cinematic', 'storytelling'] },
+            { name: 'Νοσταλγικός', tags: ['nostalgic', 'vintage', 'old-school', 'boombap'] }, { name: 'Ελπιδοφόρος', tags: ['hopeful', 'uplifting', 'inspirational'] },
+            { name: 'Για τον δρόμο', tags: ['driving', 'road-trip', 'energetic'] }, { name: 'Για προπόνηση', tags: ['workout', 'energetic', 'motivation'] },
+            { name: 'Μυστηριώδης', tags: ['mysterious', 'dark', 'suspense'] }, { name: 'Ονειρικός', tags: ['dreamy', 'ethereal', 'ambient'] },
+            { name: 'Με αυτοπεποίθηση', tags: ['confident', 'boss', 'trap'] }, { name: 'Παιχνιδιάρικος', tags: ['playful', 'fun', 'upbeat'] },
+            { name: 'Αγχωμένος', tags: ['anxious', 'tense', 'dark'] }, { name: 'Γαλήνιος', tags: ['peaceful', 'serene', 'meditation', 'lofi'] },
+            { name: 'Τρομακτικός', tags: ['spooky', 'horror', 'dark'] }, { name: 'Φουτουριστικός', tags: ['futuristic', 'sci-fi', 'electronic'] },
+            { name: 'Θριαμβευτικός', tags: ['triumphant', 'epic', 'cinematic', 'inspirational'] }
+        ];
+        const beatListEl = document.getElementById('beatList');
+        const searchInput = document.querySelector('#page-beats #search-input');
+        const mainAudio = document.getElementById('main-audio-element');
+        const stickyPlayer = document.getElementById('sticky-player');
+        const stickyPlayerTitle = document.getElementById('sticky-player-title');
+        let currentPlaylist = [];
+        let currentTrackIndex = -1;
+
+        function renderBeats(filter) {
+            if (!beatListEl) return;
+            beatListEl.innerHTML = '';
+            let filteredBeats = beatsData;
+            if (filter.type === 'category') {
+                filteredBeats = filter.value === 'all' ? beatsData.filter(b => b.category !== 'ai' && b.category !== 'custom') : beatsData.filter(b => b.category === filter.value);
+            }
+            if (filter.type === 'search') {
+                filteredBeats = beatsData.filter(b => b.title.toLowerCase().includes(filter.value) || b.tags.some(t => t.toLowerCase().includes(filter.value)));
+            }
+            if (filter.type === 'vibe') {
+                filteredBeats = beatsData.filter(b => b.tags.some(t => filter.value.includes(t)));
+            }
+            currentPlaylist = filteredBeats;
+            if (filteredBeats.length === 0) {
+                beatListEl.innerHTML = '<p style="color: #888; text-align: center;">Δεν βρέθηκαν beats.</p>';
+                return;
+            }
+            filteredBeats.forEach((beat, index) => {
+                const item = document.createElement('div');
+                item.className = 'beat-item';
+                item.dataset.beatId = beat.id;
+                const priceHtml = beat.price ? `<div class="beat-item-price ${beat.status === 'sold' ? 'sold' : ''}">${beat.status === 'sold' ? 'SOLD' : beat.price}</div>` : '';
+                item.innerHTML = `<i class="fas fa-play beat-item-play-btn"></i><div class="beat-item-title">${beat.title}</div>${priceHtml}<button class="btn">Ζήτα το</button>`;
+                item.querySelector('.beat-item-play-btn').addEventListener('click', () => handleTracklistClick(index));
+                item.querySelector('.btn').addEventListener('click', (e) => { e.stopPropagation(); showContactInfo(beat.title); });
+                beatListEl.appendChild(item);
+            });
+            updatePlayingUI();
+        }
+        function handleTracklistClick(index) {
+            const track = currentPlaylist[index];
+            if (!track) return;
+            if (currentTrackIndex === index) mainAudio.paused ? mainAudio.play() : mainAudio.pause();
+            else playTrack(index);
+        }
+        function playTrack(index) {
+            currentTrackIndex = index;
+            const track = currentPlaylist[currentTrackIndex];
+            if (!track || !track.audioSrc) { alert('Το αρχείο ήχου δεν είναι διαθέσιμο.'); return; }
+            mainAudio.src = track.audioSrc;
+            mainAudio.play().catch(e => console.error("Audio play failed:", e));
+            stickyPlayerTitle.textContent = track.title;
+            stickyPlayer.classList.add('visible');
+        }
+        function setupStickyPlayer() {
+            const player = document.getElementById('main-player');
+            if (!player) return;
+            const playPauseBtnI = player.querySelector('.play-pause-btn i');
+            const progressBar = player.querySelector('.progress-bar');
+            const progressBarContainer = player.querySelector('.progress-bar-container');
+            const timeDisplay = player.querySelector('.time-display');
+            function formatTime(s) { if (isNaN(s) || s < 0) return "0:00"; const m = Math.floor(s / 60); const sc = Math.floor(s % 60); return `${m}:${sc < 10 ? '0' : ''}${sc}`; }
+            player.querySelector('.play-pause-btn').addEventListener('click', () => { if (mainAudio.src && !mainAudio.paused) mainAudio.pause(); else if (mainAudio.src) mainAudio.play(); });
+            mainAudio.addEventListener('play', () => { playPauseBtnI.className = 'fas fa-pause'; updatePlayingUI(); });
+            mainAudio.addEventListener('pause', () => { playPauseBtnI.className = 'fas fa-play'; updatePlayingUI(); });
+            mainAudio.addEventListener('timeupdate', () => { const { currentTime, duration } = mainAudio; if (duration) { progressBar.style.width = `${(currentTime / duration) * 100}%`; timeDisplay.textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`; } });
+            mainAudio.addEventListener('loadedmetadata', () => { if (mainAudio.duration) timeDisplay.textContent = `0:00 / ${formatTime(mainAudio.duration)}`; });
+            progressBarContainer.addEventListener('click', (e) => { const w = progressBarContainer.clientWidth; const x = e.offsetX; if (mainAudio.duration) mainAudio.currentTime = (x / w) * mainAudio.duration; });
+        }
+        function updatePlayingUI() {
+            document.querySelectorAll('#page-beats .beat-item').forEach(item => {
+                item.classList.remove('is-playing-card');
+                const playBtn = item.querySelector('.beat-item-play-btn');
+                if (playBtn) playBtn.className = 'fas fa-play beat-item-play-btn';
+            });
+            if (!mainAudio.paused && currentTrackIndex > -1 && currentPlaylist[currentTrackIndex]) {
+                const playingBeat = currentPlaylist[currentTrackIndex];
+                const currentItem = document.querySelector(`#page-beats .beat-item[data-beat-id='${playingBeat.id}']`);
+                if (currentItem) {
+                    currentItem.classList.add('is-playing-card');
+                    const playBtn = currentItem.querySelector('.beat-item-play-btn');
+                    if(playBtn) playBtn.className = 'fas fa-pause beat-item-play-btn';
+                }
+            }
+        }
+        window.showContactInfo = function(title) { alert(`Για πληροφορίες σχετικά με το "${title}", στείλτε email στο studiovisionsound@gmail.com.`); };
+        
+        const categoryButtons = document.querySelectorAll('#page-beats .filter-btn');
+        const infoBoxes = { ai: document.getElementById('aiInfoBox'), vault: document.getElementById('vaultInfoBox'), custom: document.getElementById('customInfoBox'), general: document.getElementById('generalInfoBox') };
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                document.querySelector('#page-beats .filter-btn.active')?.classList.remove('active');
+                button.classList.add('active');
+                const selectedCategory = button.getAttribute('data-category');
+                searchInput.value = '';
+                Object.values(infoBoxes).forEach(box => { if(box) box.style.display = 'none'; });
+                if (infoBoxes[selectedCategory]) infoBoxes[selectedCategory].style.display = 'block';
+                else if (infoBoxes.general) infoBoxes.general.style.display = 'block';
+                renderBeats({type: 'category', value: selectedCategory});
+            });
+        });
+        if (searchInput) searchInput.addEventListener('input', () => {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            document.querySelector('#page-beats .filter-btn.active')?.classList.remove('active');
+            Object.values(infoBoxes).forEach(box => { if(box) box.style.display = 'none'; });
+            if (infoBoxes.general) infoBoxes.general.style.display = 'block';
+            renderBeats({type: 'search', value: searchTerm});
+        });
+
+        // Vibe Search Modal
+        const vibeBtn = document.getElementById('vibe-search-btn');
+        const vibeModal = document.getElementById('vibe-modal');
+        const vibeModalClose = document.getElementById('vibe-modal-close');
+        const vibeBubblesContainer = document.getElementById('vibe-bubbles-container');
+        const shuffleVibesBtn = document.getElementById('shuffle-vibes-btn');
+        const canvas = document.getElementById('vibe-visualizer');
+        let animationFrameId;
+        function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } return array; }
+        function displayRandomVibes() {
+            if (!vibeBubblesContainer) return;
+            vibeBubblesContainer.innerHTML = ''; const shuffledVibes = shuffleArray([...allVibes]);
+            shuffledVibes.slice(0, 6).forEach(vibe => {
+                const bubble = document.createElement('div'); bubble.className = 'vibe-bubble';
+                bubble.textContent = vibe.name; bubble.dataset.vibeTags = vibe.tags.join(',');
+                bubble.style.animationDuration = `${Math.random()*2+3}s`; bubble.style.animationDelay = `-${Math.random()*2}s`;
+                bubble.addEventListener('click', () => {
+                    const tags = bubble.dataset.vibeTags.split(',');
+                    searchInput.value = ''; document.querySelector('#page-beats .filter-btn.active')?.classList.remove('active');
+                    renderBeats({type: 'vibe', value: tags}); closeVibeModal();
+                });
+                vibeBubblesContainer.appendChild(bubble);
+            });
+        }
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            function resizeCanvas() { const c = document.getElementById('vibe-modal-content'); if (!c) return; const s = Math.min(c.clientWidth, c.clientHeight); canvas.width = s; canvas.height = s; }
+            function drawVisualizer() {
+                const r = canvas.width / 3.5, p = 128, cx = canvas.width / 2, cy = canvas.height / 2, t = Date.now() * 0.0005;
+                ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.beginPath();
+                for (let i = 0; i <= p; i++) {
+                    const a = (i / p) * Math.PI * 2, w = Math.sin(t + i * 0.5) * 10, pu = (Math.sin(t * 2) + 1) / 2 * 15, cr = r + w + pu;
+                    const x = cx + Math.cos(a) * cr, y = cy + Math.sin(a) * cr;
+                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                }
+                const g = ctx.createRadialGradient(cx, cy, r - 20, cx, cy, r + 20);
+                g.addColorStop(0, 'rgba(255, 255, 255, 0)'); g.addColorStop(0.5, 'rgba(200, 200, 255, 0.8)'); g.addColorStop(1, 'rgba(126, 87, 194, 0)');
+                ctx.strokeStyle = g; ctx.lineWidth = 2; ctx.shadowColor = 'rgba(200, 200, 255, 0.8)'; ctx.shadowBlur = 15; ctx.stroke(); ctx.shadowBlur = 0;
+                animationFrameId = requestAnimationFrame(drawVisualizer);
+            }
+            if (vibeBtn) vibeBtn.addEventListener('click', () => {
+                vibeModal.classList.add('visible'); displayRandomVibes(); resizeCanvas(); if (animationFrameId) cancelAnimationFrame(animationFrameId); drawVisualizer();
+            });
+            function closeVibeModal() { vibeModal.classList.remove('visible'); if (animationFrameId) cancelAnimationFrame(animationFrameId); }
+            if (vibeModalClose) vibeModalClose.addEventListener('click', closeVibeModal);
+            if (vibeModal) vibeModal.addEventListener('click', (e) => { if (e.target === vibeModal) closeVibeModal(); });
+            if (shuffleVibesBtn) shuffleVibesBtn.addEventListener('click', displayRandomVibes);
+            window.addEventListener('resize', resizeCanvas);
+        }
+        if(beatListEl) renderBeats({type: 'category', value: 'all'});
+        setupStickyPlayer();
+    })();
+
+    // --- PRICING PAGE SCRIPT ---
+    (function pricingScript() {
+        const accordionItems = document.querySelectorAll('#page-pricing .accordion-item');
+        const openMixMatchBtn = document.getElementById('open-mix-match-btn');
+        const mixMatchModal = document.getElementById('mix-match-modal');
+        const mixMatchCloseBtn = document.getElementById('mix-match-close-btn');
+        const serviceSelectionContainer = document.getElementById('service-selection-container');
+        const totalPriceEl = document.getElementById('total-price');
+        const quoteTextarea = document.getElementById('quote-textarea');
+        const copyQuoteBtn = document.getElementById('copy-quote-btn');
+        const copyFeedback = document.getElementById('copy-feedback');
+        const closeModalBtn = document.querySelector('#mix-match-modal .btn-close-modal');
+        if(!openMixMatchBtn) return; // Exit if not on pricing page
+
+        accordionItems.forEach(item => {
+            const button = item.querySelector('.service-toggle-btn');
+            const content = item.querySelector('.service-content');
+            button.addEventListener('click', () => {
+                const wasVisible = content.classList.contains('visible');
+                accordionItems.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.querySelector('.service-toggle-btn').classList.remove('active');
+                        otherItem.querySelector('.service-content').classList.remove('visible');
+                    }
+                });
+                button.classList.toggle('active', !wasVisible);
+                content.classList.toggle('visible', !wasVisible);
+            });
+        });
+
+        function getServicesFromPage() {
+            const services = [];
+            document.querySelectorAll('#page-pricing [data-service-name][data-service-price]').forEach(el => {
+                services.push({
+                    name: el.dataset.serviceName, price: parseFloat(el.dataset.servicePrice),
+                    quantifiable: el.dataset.quantifiable === 'true', category: el.dataset.serviceCategory || 'other',
+                    info: el.dataset.serviceInfo || 'Δεν υπάρχουν πληροφορίες.'
+                });
+            });
+            return services;
+        }
+
+        function populateMixMatchList(services) {
+            serviceSelectionContainer.innerHTML = '';
+            const groupedServices = services.reduce((acc, service) => {
+                const category = service.category; if (!acc[category]) acc[category] = [];
+                acc[category].push(service); return acc;
+            }, {});
+            const categoryOrder = ['audio', 'visual', 'video', 'other'];
+            categoryOrder.forEach(categoryKey => {
+                if (groupedServices[categoryKey]) {
+                    const categoryContainer = document.createElement('div'); categoryContainer.className = 'modal-accordion-item';
+                    const categoryButton = document.createElement('button'); categoryButton.className = 'modal-category-toggle';
+                    categoryButton.innerHTML = `<span>${categoryKey}</span><i class="fas fa-chevron-down"></i>`;
+                    const categoryContent = document.createElement('div'); categoryContent.className = 'modal-category-content';
+                    const serviceList = document.createElement('ul'); serviceList.className = 'service-selection-list';
+                    groupedServices[categoryKey].forEach((service, index) => {
+                        const li = document.createElement('li'); li.dataset.name = service.name; li.dataset.price = service.price;
+                        const infoIconHTML = `<span class="info-icon">i<span class="info-tooltip">${service.info}</span></span>`;
+                        if (service.quantifiable) {
+                            li.dataset.quantifiable = true;
+                            li.innerHTML = `<div class="item-details"><span class="item-name">${service.name}</span>${infoIconHTML}</div><div class="quantity-selector"><button class="quantity-btn minus">-</button><input type="number" class="quantity-input" value="0" min="0" readonly><button class="quantity-btn plus">+</button></div>`;
+                        } else {
+                            li.innerHTML = `<label for="service-${categoryKey}-${index}"><div class="item-details"><span class="item-name">${service.name}</span>${infoIconHTML}</div><span class="item-price">€${service.price}</span><input type="checkbox" id="service-${categoryKey}-${index}"></label>`;
+                        }
+                        serviceList.appendChild(li);
+                    });
+                    categoryContent.appendChild(serviceList); categoryContainer.appendChild(categoryButton);
+                    categoryContainer.appendChild(categoryContent); serviceSelectionContainer.appendChild(categoryContainer);
+                }
+            });
+            addServiceListeners(); addModalAccordionListeners();
+        }
+        function addModalAccordionListeners() {
+            serviceSelectionContainer.querySelectorAll('.modal-category-toggle').forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const content = toggle.nextElementSibling;
+                    const wasActive = toggle.classList.contains('active');
+                    serviceSelectionContainer.querySelectorAll('.modal-category-toggle').forEach(ot => { if (ot !== toggle) { ot.classList.remove('active'); ot.nextElementSibling.classList.remove('visible'); } });
+                    toggle.classList.toggle('active', !wasActive); content.classList.toggle('visible', !wasActive);
+                });
+            });
+        }
+        function addServiceListeners() {
+            serviceSelectionContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.addEventListener('change', updateQuoteAndPrice));
+            serviceSelectionContainer.querySelectorAll('.quantity-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const input = btn.parentElement.querySelector('.quantity-input'); let val = parseInt(input.value, 10);
+                    if (btn.classList.contains('plus')) val++; else val = Math.max(0, val - 1);
+                    input.value = val; updateQuoteAndPrice();
+                });
+            });
+        }
+        function updateQuoteAndPrice() {
+            let total = 0; let servicesList = '';
+            serviceSelectionContainer.querySelectorAll('li').forEach(li => {
+                const name = li.dataset.name, price = parseFloat(li.dataset.price);
+                if (li.dataset.quantifiable) {
+                    const quantity = parseInt(li.querySelector('.quantity-input').value, 10);
+                    if (quantity > 0) { const itemTotal = price * quantity; total += itemTotal; servicesList += `- ${name} x ${quantity} (€${itemTotal})\n`; }
+                } else {
+                    const checkbox = li.querySelector('input[type="checkbox"]');
+                    if (checkbox && checkbox.checked) { total += price; servicesList += `- ${name} (€${price})\n`; }
+                }
+            });
+            totalPriceEl.textContent = `€${total}`;
+            if (servicesList) {
+                quoteTextarea.value = `Καλησπέρα, θα ήθελα να χρησιμοποιήσω τις υπηρεσίες σας και ενδιαφέρομαι για τις παρακάτω:\n\n${servicesList}\nΣυνολική ενδεικτική τιμή: €${total}\n\nΕυχαριστώ!`;
+            } else { quoteTextarea.value = ''; }
+        }
+        function copyQuoteToClipboard() {
+            if (quoteTextarea.value === '') { alert('Επιλέξτε τουλάχιστον μία υπηρεσία.'); return; }
+            navigator.clipboard.writeText(quoteTextarea.value).then(() => {
+                copyFeedback.classList.add('visible');
+                setTimeout(() => { copyFeedback.classList.remove('visible'); }, 2000);
+            }).catch(err => alert('Η αντιγραφή απέτυχε.'));
+        }
+        function openMixMatchModal() {
+            const services = getServicesFromPage(); populateMixMatchList(services); updateQuoteAndPrice();
+            mixMatchModal.classList.add('visible'); document.body.classList.add('modal-open');
+        }
+        function closeMixMatchModal() { mixMatchModal.classList.remove('visible'); document.body.classList.remove('modal-open'); }
+        openMixMatchBtn.addEventListener('click', openMixMatchModal);
+        mixMatchCloseBtn.addEventListener('click', closeMixMatchModal);
+        closeModalBtn.addEventListener('click', closeMixMatchModal);
+        mixMatchModal.addEventListener('click', e => { if (e.target === mixMatchModal) closeMixMatchModal(); });
+        copyQuoteBtn.addEventListener('click', copyQuoteToClipboard);
+    })();
 });
 </script>
 
